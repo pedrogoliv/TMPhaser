@@ -1,0 +1,2 @@
+1. Mudar explosão para sprite
+2. Meter os PNG em PNG (falta remover o fundo XD)
