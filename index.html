@@ -1,33 +1,30 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html>
   <head>
-    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Space Shooter</title>
     <style>
-      body { margin: 0; background: black; }
-      #game-container { margin: 0 auto; display: block; }
+      html,
+      body,
+      .container {
+        margin: 0px;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+      }
+      body {
+        background-image: url('assets/images/piiixl/bg.gif');
+        background-color: rgba(0, 0, 0, 0.5);
+        background-blend-mode: darken;
+      }
+      canvas {
+        border: 2px solid #b2405e;
+      }
     </style>
+    <script src="assets/js/phaser.min.js"></script>
   </head>
   <body>
-    <div id="game-container"></div>
-
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
-    <script type="module">
-      import BootScene from './src/BootScene.js';
-      import MenuScene from './src/MenuScene.js';
-      import GameScene from './src/GameScene.js';
-
-      const config = {
-        type: Phaser.AUTO,
-        width: 480,
-        height: 640,
-        parent: 'game-container',
-        backgroundColor: '#000',
-        physics: { default: 'arcade' },
-        scene: [BootScene, MenuScene, GameScene],
-      };
-
-      new Phaser.Game(config);
-    </script>
+    <div class="container" id="game-container"></div>
+    <script src="src/main.js" type="module"></script>
   </body>
 </html>
