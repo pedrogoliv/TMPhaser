@@ -3,13 +3,13 @@ Project Setup:
   ✅ running project on local web server
   ✅ review basic project code
   ✅ update game config
-  ☐ code planning
+  ✅ code planning
 
 Player:
-  ☐ loading assets
-  ☐ creating animations
-  ☐ create game objects
-  ☐ create animations
+  ✅ loading assets @feito(16-06 15:50)
+  ✅ creating animations @feito(16-06 16:00)
+  ✅ create game objects @feito(16-06 16:10)
+  ✅ create animations @feito(16-06 16:10)
   ☐ input and player movement
 
 Enemies:
