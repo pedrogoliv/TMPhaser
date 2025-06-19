@@ -31,10 +31,10 @@ Enemy Spawners:
   ✅ event bus component
 
 UI & Audio:
-  ☐ implement scoring
-  ☐ player lives
+  ✅ implement scoring
+  ✅ player lives
   ☐ game audio
-  ☐ backgrounds
+  ✅ backgrounds
 
 
 

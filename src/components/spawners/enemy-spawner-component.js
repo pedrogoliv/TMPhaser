@@ -1,25 +1,31 @@
+import Phaser from '../../lib/phaser.js';
+import { CUSTOM_EVENTS } from '../events/event-bus-component.js';
+
 export class EnemySpawnerComponent {
   #scene;
   #spawnInterval;
   #spawnAt;
   #group;
+  #disableSpawning;
 
   constructor(scene, enemyClass, spawnConfig, eventBusComponent) {
     this.#scene = scene;
 
+    // create group
     this.#group = this.#scene.add.group({
       name: `${this.constructor.name}-${Phaser.Math.RND.uuid()}`,
       classType: enemyClass,
       runChildUpdate: true,
       createCallback: (enemy) => {
-        console.log(enemy);
         enemy.init(eventBusComponent);
       },
     });
 
     this.#spawnInterval = spawnConfig.interval;
     this.#spawnAt = spawnConfig.spawnAt;
+    this.#disableSpawning = false;
 
+    // handle automatic call to update
     this.#scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.#scene.physics.world.on(Phaser.Physics.Arcade.Events.WORLD_STEP, this.worldStep, this);
     this.#scene.events.once(
@@ -30,6 +36,9 @@ export class EnemySpawnerComponent {
       },
       this
     );
+    eventBusComponent.on(CUSTOM_EVENTS.GAME_OVER, () => {
+      this.#disableSpawning = true;
+    });
   }
 
   get phaserGroup() {
@@ -37,6 +46,10 @@ export class EnemySpawnerComponent {
   }
 
   update(ts, dt) {
+    if (this.#disableSpawning) {
+      return;
+    }
+
     this.#spawnAt -= dt;
     if (this.#spawnAt > 0) {
       return;

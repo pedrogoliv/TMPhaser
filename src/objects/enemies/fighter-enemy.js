@@ -61,7 +61,7 @@ export class FighterEnemy extends Phaser.GameObjects.Container {
     return 'fighter';
   }
 
-  get shipDestroyAnimationKey() {
+  get shipDestroyedAnimationKey() {
     return 'fighter_destroy';
   }
 
@@ -106,12 +106,7 @@ export class FighterEnemy extends Phaser.GameObjects.Container {
     if (this.#healthComponent.isDead) {
       this.setActive(false);
       this.setVisible(false);
-        this.#eventBusComponent.emit(CUSTOM_EVENTS.ENEMY_DESTROYED, {
-          x: this.x,
-          y: this.y,
-          shipAssetKey: 'fighter', // nome da imagem/spritesheet usada
-          explosionAnimationKey: 'explosion', // key da animação no PreloadScene
-        });
+      this.#eventBusComponent.emit(CUSTOM_EVENTS.ENEMY_DESTROYED, this);
     }
 
     this.#inputComponent.update();
