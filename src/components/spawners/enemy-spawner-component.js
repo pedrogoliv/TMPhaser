@@ -34,6 +34,7 @@ export class EnemySpawnerComponent {
       },
       this
     );
+
     eventBusComponent.on(CUSTOM_EVENTS.GAME_OVER, () => {
       this.#disableSpawning = true;
     });
@@ -44,26 +45,24 @@ export class EnemySpawnerComponent {
   }
 
   update(ts, dt) {
-    if (this.#disableSpawning) {
-      return;
-    }
+    if (this.#disableSpawning) return;
 
     this.#spawnAt -= dt;
-    if (this.#spawnAt > 0) {
-      return;
-    }
+    if (this.#spawnAt > 0) return;
 
     const x = Phaser.Math.RND.between(30, this.#scene.scale.width - 30);
     const enemy = this.#group.get(x, -20);
     enemy.reset();
+
     this.#spawnAt = this.#spawnInterval;
+
+    // Debug: confirmar geração de inimigo
+    console.log(`[SPAWN] Novo inimigo. Próximo em ${this.#spawnInterval}ms`);
   }
 
   worldStep(delta) {
     this.#group.getChildren().forEach((enemy) => {
-      if (!enemy.active) {
-        return;
-      }
+      if (!enemy.active) return;
 
       if (enemy.y > this.#scene.scale.height + 50) {
         enemy.setActive(false);
@@ -73,6 +72,11 @@ export class EnemySpawnerComponent {
   }
 
   increaseDifficulty() {
-    this.#spawnInterval = Math.max(300, this.#spawnInterval - 200);
+    const newInterval = Math.max(300, this.#spawnInterval - 200);
+    if (newInterval !== this.#spawnInterval) {
+      this.#spawnInterval = newInterval;
+      this.#spawnAt = Math.min(this.#spawnAt, this.#spawnInterval); // força novo spawn mais cedo se estiver muito longe
+      console.log(`[DIFICULDADE] Novo intervalo: ${this.#spawnInterval}ms`);
+    }
   }
 }

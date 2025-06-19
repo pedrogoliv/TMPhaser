@@ -49,12 +49,6 @@ export class AudioManager {
       CUSTOM_EVENTS.SHIP_SHOOT,
     ];
 
-    allEvents.forEach((eventName) => {
-      this.#eventBusComponent.on(eventName, () => {
-        console.log('🎧 AudioManager recebeu evento:', eventName);
-      });
-    });
-
     // Limpar som ao sair da cena
     this.#scene.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.#backgroundMusic.stop();
