@@ -22,9 +22,6 @@ export class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // Som direto para testar
-    this.sound.play('explosion');
-
     // Background animado
     this.add.sprite(0, 0, 'bg1', 0).setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg1');
     this.add.sprite(0, 0, 'bg2', 0).setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg2');
