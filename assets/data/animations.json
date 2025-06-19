@@ -59,5 +59,11 @@
     "frameRate": 8,
     "repeat": -1,
     "assetKey": "bg3"
+  },
+  {
+    "key": "invincible_shield",
+    "frameRate": 12,
+    "repeat": -1,
+    "assetKey": "invincibility"
   }
 ]

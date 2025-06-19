@@ -16,6 +16,8 @@ export class Player extends Phaser.GameObjects.Container {
   #shipSprite;
   #shipEngineSprite;
   #shipEngineThrusterSprite;
+  #shieldSprite; // NOVO: sprite do escudo
+  #invulneravel = false; // NOVO: estado de invulnerabilidade
 
   constructor(scene, eventBusComponent) {
     super(scene, scene.scale.width / 2, scene.scale.height - 32, []);
@@ -68,6 +70,7 @@ export class Player extends Phaser.GameObjects.Container {
       this
     );
   }
+
   get colliderComponent() {
     return this.#colliderComponent;
   }
@@ -84,6 +87,10 @@ export class Player extends Phaser.GameObjects.Container {
     return this.#weaponComponent;
   }
 
+  get invulneravel() {
+    return this.#invulneravel;
+  }
+
   update(ts, dt) {
     if (!this.active) {
       return;
@@ -92,9 +99,7 @@ export class Player extends Phaser.GameObjects.Container {
     if (this.#healthComponent.isDead) {
       this.#hide();
       this.setVisible(true);
-      this.#shipSprite.play({
-        key: 'explosion',
-      });
+      this.#shipSprite.play({ key: 'explosion' });
       this.#eventBusComponent.emit(CUSTOM_EVENTS.PLAYER_DESTROYED);
       return;
     }
@@ -103,6 +108,11 @@ export class Player extends Phaser.GameObjects.Container {
     this.#keyboardInputComponent.update();
     this.#horizontalMovementComponent.update();
     this.#weaponComponent.update(dt);
+
+    // Atualizar posição do escudo se estiver ativo
+    if (this.#shieldSprite && this.#invulneravel) {
+      this.#shieldSprite.setPosition(this.x, this.y);
+    }
   }
 
   #hide() {
@@ -111,6 +121,12 @@ export class Player extends Phaser.GameObjects.Container {
     this.#shipEngineSprite.setVisible(false);
     this.#shipEngineThrusterSprite.setVisible(false);
     this.#keyboardInputComponent.lockInput = true;
+
+    // Remover escudo caso ainda esteja visível
+    if (this.#shieldSprite) {
+      this.#shieldSprite.destroy();
+      this.#shieldSprite = null;
+    }
   }
 
   #spawn() {
@@ -122,5 +138,25 @@ export class Player extends Phaser.GameObjects.Container {
     this.#healthComponent.reset();
     this.setPosition(this.scene.scale.width / 2, this.scene.scale.height - 32);
     this.#keyboardInputComponent.lockInput = false;
+
+    // Tornar invulnerável temporariamente
+    this.#invulneravel = true;
+    this.setAlpha(0.5); // visual: semi-transparente
+
+    // Criar o escudo animado
+    this.#shieldSprite = this.scene.add.sprite(this.x, this.y, 'invincibility');
+    this.#shieldSprite.setDepth(5);
+    this.#shieldSprite.setScale(1.4);
+    this.#shieldSprite.play('invincible_shield');
+
+    // Parar invulnerabilidade após 2 segundos
+    this.scene.time.delayedCall(2000, () => {
+      this.#invulneravel = false;
+      this.setAlpha(1);
+      if (this.#shieldSprite) {
+        this.#shieldSprite.destroy();
+        this.#shieldSprite = null;
+      }
+    });
   }
 }

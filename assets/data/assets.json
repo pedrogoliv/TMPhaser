@@ -76,6 +76,12 @@
         "key": "ship",
         "url": "ship.png",
         "frameConfig": { "frameWidth": 48, "frameHeight": 48 }
+      },
+      {
+        "type": "spritesheet",
+        "key": "invincibility",
+        "url": "Invincibility.png",
+        "frameConfig": { "frameWidth": 64, "frameHeight": 64 }
       }
     ]
   },
