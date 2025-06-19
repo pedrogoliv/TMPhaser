@@ -32,7 +32,7 @@ export class MenuScene extends Phaser.Scene {
     this.add.image(width / 2, height - 120, 'start_btn')
       .setInteractive()
       .setScale(0.4)
-      .on('pointerdown', () => this.scene.start('GameScene'));
+      .on('pointerdown', () => this.scene.start('TutorialScene'));
 
     const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.5)
       .setOrigin(0)

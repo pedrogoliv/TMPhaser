@@ -63,7 +63,7 @@ export class Lives extends Phaser.GameObjects.Container {
       });
 
       const buttonStyle = {
-        fontFamily: '"Press Start 2P", monospace',
+          fontFamily: '"Press Start 2P", monospace',
         fontSize: '14px',
         color: '#ffffff',
         backgroundColor: '#000000',
