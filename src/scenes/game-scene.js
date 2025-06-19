@@ -33,6 +33,9 @@ export class GameScene extends Phaser.Scene {
     // Instanciar AudioManager com o MESMO eventBus
     const audioManager = new AudioManager(this, eventBusComponent);
 
+    this.music = this.sound.get('music'); // para poderes controlar no pause
+
+
     // Jogador
     const player = new Player(this, eventBusComponent);
 
@@ -98,5 +101,28 @@ export class GameScene extends Phaser.Scene {
 
     new Score(this, eventBusComponent);
     new Lives(this, eventBusComponent);
+
+    
+    this.isPaused = false;
+    this.input.keyboard.on('keydown-ESC', () => this.togglePauseMenu());
+    this.input.keyboard.on('keydown-P', () => this.togglePauseMenu());
   }
+
+  togglePauseMenu() {
+  if (!this.scene.isPaused()) {
+    this.music?.pause();             // Pausa a música
+    this.scene.launch('PauseScene'); // Mostra o menu
+    this.scene.pause();              // Pausa a lógica toda da GameScene
+  }
+}
+
+
+pauseGame() {
+  this.scene.launch('PauseScene');  // mostra menu
+  this.scene.pause();               // pausa tudo: updates, physics, spawners, etc.
+  this.music?.pause();              // pausa música
+}
+
+
+
 }
