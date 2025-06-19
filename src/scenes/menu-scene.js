@@ -10,6 +10,8 @@ export class MenuScene extends Phaser.Scene {
     this.load.image('start_btn', 'assets/images/menu/Start_BTN.png');
     this.load.image('exit_btn', 'assets/images/menu/Exit_BTN.png');
     this.load.image('settings_btn', 'assets/images/menu/Settings_BTN.png');
+
+    
   }
 
   create() {
@@ -46,5 +48,9 @@ export class MenuScene extends Phaser.Scene {
     settingsBtn.on('pointerdown', () => {
       alert('Definições (ainda por implementar)');
     });
+
+
   }
+
+  
 }

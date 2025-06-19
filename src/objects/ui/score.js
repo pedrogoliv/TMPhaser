@@ -12,9 +12,9 @@ export class Score extends Phaser.GameObjects.Text {
     #score;
 
     constructor(scene, eventBusComponent) {
-        super(scene, scene.scale.width / 2, 30, '0', {
-            fontFamily: '"Press Start 2P", monospace',
+        super(scene, scene.scale.width / 2, 35, '0', {
             fontSize: '25px',
+            fontStyle: 'bold',
             color: '#ffffff',
         });
 

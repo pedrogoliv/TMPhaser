@@ -1,56 +1,50 @@
-Project Setup:
-  ✅ download basic project files
-  ✅ running project on local web server
-  ✅ review basic project code
-  ✅ update game config
-  ✅ code planning
+Configuração do Projeto:
+✅ descarregar os ficheiros base do projeto
+✅ correr o projeto num servidor local
+✅ rever o código base do projeto
+✅ atualizar a configuração do jogo
+✅ planeamento do código
 
-Player:
-  ✅ loading assets @feito(16-06 15:50)
-  ✅ creating animations @feito(16-06 16:00)
-  ✅ create game objects @feito(16-06 16:10)
-  ✅ create animations @feito(16-06 16:10)
-  ✅ input and player movement @feito(18-06 19:22)
+Jogador:
+✅ carregar os recursos
+✅ criar animações
+✅ criar objeto do jogador
+✅ criar animações
+✅ controlo e movimento do jogador
 
-Enemies:
-  ✅ create game object
-  ✅ create animations
-  ✅ basic AI movement
-  ✅ weapons
-  ✅ phaser update and delta time
+Inimigos:
+✅ criar objeto do inimigo
+✅ criar animações
+✅ movimento básico (IA)
+✅ armas
+✅ atualização com Phaser e delta time
 
-Collisions:
-  ✅ collisions between enemies and player
-  ✅ collisions between bullets and ships
-  ✅ health component
+Colisões:
+✅ colisões entre inimigos e jogador
+✅ colisões entre balas e naves
+✅ componente de vida
 
-Enemy Spawners:
-  ✅ use groups to spawn multiple enemies from object pool
-  ✅ create group for ship explosions
-  ✅ update collisions to support groups
-  ✅ event bus component
+Geradores de Inimigos:
+✅ usar grupos para gerar múltiplos inimigos com object pool
+✅ criar grupo para explosões de naves
+✅ atualizar colisões para suportar grupos
+✅ componente de sistema de eventos (event bus)
 
-UI & Audio:
-  ✅ implement scoring
-  ✅ player lives
-  ☐ game audio
-  ✅ backgrounds
+Interface e Som:
+✅ implementar pontuação
+✅ vidas do jogador
+☐ som do jogo
+✅ fundos animados
 
+-------------------------------------------------------------
 
-
--------------------------------
-
-Enhancement Ideas:
-  ☐ weapon powerups
-  ☐ mobile support
-  ☐ boss enemies
-  ☐ other enemy types
-  ☐ enemy waves
-  ☐ high scores
-  ☐ increased difficulty (score or time based)
-  ☐ spawn with shield or be invulnable for period of time
-  ☐ title, options, and credits scenes
-
--------------------------------
-☐ ✔ ✘
--------------------------------
+Ideias de Melhorias:
+☐ melhoramentos de armas
+☐ suporte para telemóveis
+☐ chefes (bosses)
+☐ outros tipos de inimigos
+☐ ondas de inimigos
+☐ tabela de recordes
+☐ aumento da dificuldade (com base na pontuação ou tempo)
+☐ reaparecer com escudo ou invulnerabilidade temporária
+☐ cenas de título, opções e créditos
