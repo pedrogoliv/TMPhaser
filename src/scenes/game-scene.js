@@ -10,6 +10,7 @@ import { CUSTOM_EVENTS, EventBusComponent } from '../components/events/event-bus
 import { EnemyDestroyedComponent } from '../components/spawners/enemy-destroyed-component.js';
 import { Score } from '../objects/ui/score.js';
 import { Lives } from '../objects/ui/lives.js';
+import { AudioManager } from '../objects/audio-manager.js';
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -18,19 +19,27 @@ export class GameScene extends Phaser.Scene {
 
   preload() {
     this.load.pack('asset_pack', 'assets/data/assets.json');
-
-    
   }
 
   create() {
+    // Som direto para testar
+    this.sound.play('explosion');
+
+    // Background animado
     this.add.sprite(0, 0, 'bg1', 0).setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg1');
     this.add.sprite(0, 0, 'bg2', 0).setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg2');
     this.add.sprite(0, 0, 'bg3', 0).setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg3');
 
+    // 👉 Instanciar EventBus
     const eventBusComponent = new EventBusComponent();
+
+    // ✅ Instanciar AudioManager com o MESMO eventBus
+    const audioManager = new AudioManager(this, eventBusComponent);
+
+    // Jogador
     const player = new Player(this, eventBusComponent);
 
-    // spawn enemies
+    // Enemies
     const scoutSpawner = new EnemySpawnerComponent(
       this,
       ScoutEnemy,
@@ -40,6 +49,7 @@ export class GameScene extends Phaser.Scene {
       },
       eventBusComponent
     );
+
     const fighterSpawner = new EnemySpawnerComponent(
       this,
       FighterEnemy,
@@ -49,65 +59,45 @@ export class GameScene extends Phaser.Scene {
       },
       eventBusComponent
     );
+
     new EnemyDestroyedComponent(this, eventBusComponent);
 
-    // collisions for player and enemy groups
+    // Colisões jogador vs inimigos
     this.physics.add.overlap(player, scoutSpawner.phaserGroup, (playerGameObject, enemyGameObject) => {
-      if (!playerGameObject.active || !enemyGameObject.active) {
-        return;
-      }
-
+      if (!playerGameObject.active || !enemyGameObject.active) return;
       playerGameObject.colliderComponent.collideWithEnemyShip();
       enemyGameObject.colliderComponent.collideWithEnemyShip();
     });
+
     this.physics.add.overlap(player, fighterSpawner.phaserGroup, (playerGameObject, enemyGameObject) => {
-      if (!playerGameObject.active || !enemyGameObject.active) {
-        return;
-      }
-
+      if (!playerGameObject.active || !enemyGameObject.active) return;
       playerGameObject.colliderComponent.collideWithEnemyShip();
       enemyGameObject.colliderComponent.collideWithEnemyShip();
     });
+
+    // Colisões de projéteis dos inimigos
     eventBusComponent.on(CUSTOM_EVENTS.ENEMY_INIT, (gameObject) => {
-      if (gameObject.constructor.name !== 'FighterEnemy') {
-        return;
-      }
+      if (gameObject.constructor.name !== 'FighterEnemy') return;
 
       this.physics.add.overlap(player, gameObject.weaponGameObjectGroup, (playerGameObject, projectileGameObject) => {
-        if (!playerGameObject.active || !projectileGameObject.active) {
-          return;
-        }
-
+        if (!playerGameObject.active || !projectileGameObject.active) return;
         gameObject.weaponComponent.destroyBullet(projectileGameObject);
         playerGameObject.colliderComponent.collideWithEnemyProjectile();
       });
     });
 
-    // collisions for player weapons and enemy groups
-    this.physics.add.overlap(
-      scoutSpawner.phaserGroup,
-      player.weaponGameObjectGroup,
-      (enemyGameObject, projectileGameObject) => {
-        if (!enemyGameObject.active || !projectileGameObject.active) {
-          return;
-        }
+    // Colisões das balas do jogador com inimigos
+    this.physics.add.overlap(scoutSpawner.phaserGroup, player.weaponGameObjectGroup, (enemyGameObject, projectileGameObject) => {
+      if (!enemyGameObject.active || !projectileGameObject.active) return;
+      player.weaponComponent.destroyBullet(projectileGameObject);
+      enemyGameObject.colliderComponent.collideWithEnemyProjectile();
+    });
 
-        player.weaponComponent.destroyBullet(projectileGameObject);
-        enemyGameObject.colliderComponent.collideWithEnemyProjectile();
-      }
-    );
-    this.physics.add.overlap(
-      fighterSpawner.phaserGroup,
-      player.weaponGameObjectGroup,
-      (enemyGameObject, projectileGameObject) => {
-        if (!enemyGameObject.active || !projectileGameObject.active) {
-          return;
-        }
-
-        player.weaponComponent.destroyBullet(projectileGameObject);
-        enemyGameObject.colliderComponent.collideWithEnemyProjectile();
-      }
-    );
+    this.physics.add.overlap(fighterSpawner.phaserGroup, player.weaponGameObjectGroup, (enemyGameObject, projectileGameObject) => {
+      if (!enemyGameObject.active || !projectileGameObject.active) return;
+      player.weaponComponent.destroyBullet(projectileGameObject);
+      enemyGameObject.colliderComponent.collideWithEnemyProjectile();
+    });
 
     new Score(this, eventBusComponent);
     new Lives(this, eventBusComponent);

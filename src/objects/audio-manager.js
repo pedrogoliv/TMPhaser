@@ -9,7 +9,7 @@ export class AudioManager {
     this.#eventBusComponent = eventBusComponent;
 
     // start background music
-    this.#scene.sound.play('bg', {
+    this.#scene.sound.play('music', {
       volume: 0.6,
       loop: true,
     });
@@ -35,8 +35,24 @@ export class AudioManager {
 
     // listen for ship fire bullet events
     this.#eventBusComponent.on(CUSTOM_EVENTS.SHIP_SHOOT, () => {
-      this.#scene.sound.play('shot1', {
+      this.#scene.sound.play('shot', {
         volume: 0.05,
+      });
+    });
+
+    const allEvents = [
+      CUSTOM_EVENTS.ENEMY_INIT,
+      CUSTOM_EVENTS.ENEMY_DESTROYED,
+      CUSTOM_EVENTS.PLAYER_SPAWN,
+      CUSTOM_EVENTS.PLAYER_DESTROYED,
+      CUSTOM_EVENTS.GAME_OVER,
+      CUSTOM_EVENTS.SHIP_HIT,
+      CUSTOM_EVENTS.SHIP_SHOOT,
+    ];
+
+    allEvents.forEach((eventName) => {
+      this.#eventBusComponent.on(eventName, () => {
+        console.log('🎧 AudioManager recebeu evento:', eventName);
       });
     });
   }
