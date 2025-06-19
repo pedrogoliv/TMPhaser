@@ -8,39 +8,36 @@ export class AudioManager {
     this.#scene = scene;
     this.#eventBusComponent = eventBusComponent;
 
-    // Reproduzir música de fundo (nome correto: 'music')
-    this.#scene.sound.play('music', {
+    // start background music
+    this.#scene.sound.play('bg', {
       volume: 0.6,
       loop: true,
     });
 
-    // Som ao destruir inimigo
+    // listen for ship destroyed events
     this.#eventBusComponent.on(CUSTOM_EVENTS.ENEMY_DESTROYED, () => {
-      this.#playSound('explosion', 0.6);
+      this.#scene.sound.play('explosion', {
+        volume: 0.6,
+      });
     });
-
-    // Som ao destruir jogador
     this.#eventBusComponent.on(CUSTOM_EVENTS.PLAYER_DESTROYED, () => {
-      this.#playSound('explosion', 0.6);
+      this.#scene.sound.play('explosion', {
+        volume: 0.6,
+      });
     });
 
-    // Som ao ser atingido
+    // listen for ship hit events
     this.#eventBusComponent.on(CUSTOM_EVENTS.SHIP_HIT, () => {
-      this.#playSound('hit', 0.6);
+      this.#scene.sound.play('hit', {
+        volume: 0.6,
+      });
     });
 
-    // Som ao disparar
+    // listen for ship fire bullet events
     this.#eventBusComponent.on(CUSTOM_EVENTS.SHIP_SHOOT, () => {
-      this.#playSound('shot', 0.05);
+      this.#scene.sound.play('shot1', {
+        volume: 0.05,
+      });
     });
-  }
-
-  #playSound(key, volume = 1) {
-    const sound = this.#scene.sound.get(key);
-    if (sound) {
-      sound.play({ volume });
-    } else {
-      console.warn(`⚠️ Som "${key}" não encontrado.`);
-    }
   }
 }
