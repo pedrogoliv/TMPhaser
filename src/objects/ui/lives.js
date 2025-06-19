@@ -20,7 +20,7 @@ export class Lives extends Phaser.GameObjects.Container {
       this.add(ship);
     }
 
-    // ⚠️ Forçar carregamento da fonte "Press Start 2P"
+    //  Forçar carregamento da fonte "Press Start 2P"
     this.scene.add.text(0, 0, '', {
       fontFamily: '"Press Start 2P", monospace',
       fontSize: '1px',

@@ -27,10 +27,10 @@ export class GameScene extends Phaser.Scene {
     this.add.sprite(0, 0, 'bg2', 0).setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg2');
     this.add.sprite(0, 0, 'bg3', 0).setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg3');
 
-    // 👉 Instanciar EventBus
+    // Instanciar EventBus
     const eventBusComponent = new EventBusComponent();
 
-    // ✅ Instanciar AudioManager com o MESMO eventBus
+    // Instanciar AudioManager com o MESMO eventBus
     const audioManager = new AudioManager(this, eventBusComponent);
 
     // Jogador
