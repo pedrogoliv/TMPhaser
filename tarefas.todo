@@ -25,10 +25,10 @@ Collisions:
   ✅ health component
 
 Enemy Spawners:
-  ☐ use groups to spawn multiple enemies from object pool
-  ☐ create group for ship explosions
-  ☐ update collisions to support groups
-  ☐ event bus component
+  ✅ use groups to spawn multiple enemies from object pool
+  ✅ create group for ship explosions
+  ✅ update collisions to support groups
+  ✅ event bus component
 
 UI & Audio:
   ☐ implement scoring

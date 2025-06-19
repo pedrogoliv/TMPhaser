@@ -57,6 +57,14 @@ export class FighterEnemy extends Phaser.GameObjects.Container {
     return this.#weaponComponent;
   }
 
+  get shipAssetKey() {
+    return 'fighter';
+  }
+
+  get shipDestroyAnimationKey() {
+    return 'fighter_destroy';
+  }
+
   init(eventBusComponent) {
     this.#eventBusComponent = eventBusComponent;
     this.#inputComponent = new BotFighterInputComponent();
@@ -98,6 +106,12 @@ export class FighterEnemy extends Phaser.GameObjects.Container {
     if (this.#healthComponent.isDead) {
       this.setActive(false);
       this.setVisible(false);
+        this.#eventBusComponent.emit(CUSTOM_EVENTS.ENEMY_DESTROYED, {
+          x: this.x,
+          y: this.y,
+          shipAssetKey: 'fighter', // nome da imagem/spritesheet usada
+          explosionAnimationKey: 'explosion', // key da animação no PreloadScene
+        });
     }
 
     this.#inputComponent.update();

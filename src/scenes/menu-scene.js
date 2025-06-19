@@ -17,7 +17,7 @@ export class MenuScene extends Phaser.Scene {
 
     // Header (título com imagem) → mais pequeno e mais abaixo
     this.add.image(width / 2, height / 2 - 100, 'header')
-      .setScale(0.35)
+      .setScale(0.10)
       .setOrigin(0.5);
 
     // Botão Start → mais pequeno e mais junto ao fundo

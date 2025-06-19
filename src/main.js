@@ -20,7 +20,7 @@ const game = new Phaser.Game({
     default: 'arcade', // fazer com que o jogo funcione com a física "arcade", por exemplo desliga a gravidade
     arcade: {
       gravity: { y: 0, x: 0 },
-      debug: true,
+      debug: false,
     },
   },
 });
