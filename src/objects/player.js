@@ -83,7 +83,7 @@ export class Player extends Phaser.GameObjects.Container {
         }
         
         if (this.#healthComponent.isDead){
-            this.#hide;
+            this.#hide();
             this.setVisible(true);
             this.#shipSprite.play({
                 key: 'explosion',
