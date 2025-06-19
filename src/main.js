@@ -29,4 +29,4 @@ game.scene.add('MenuScene', MenuScene);
 game.scene.add('BootScene', BootScene);
 game.scene.add('PreloadScene', PreloadScene);
 game.scene.add('GameScene', GameScene);
-game.scene.start('MenuScene');
+game.scene.start('BootScene');

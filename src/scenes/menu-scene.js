@@ -26,7 +26,7 @@ export class MenuScene extends Phaser.Scene {
       .setScale(0.4);
 
     startBtn.on('pointerdown', () => {
-      this.scene.start('BootScene');
+      this.scene.start('GameScene');
     });
 
     // Botão Exit → mesmo junto ao fundo, com pequeno espaço
