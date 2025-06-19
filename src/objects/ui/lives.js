@@ -20,6 +20,12 @@ export class Lives extends Phaser.GameObjects.Container {
       this.add(ship);
     }
 
+    // ⚠️ Forçar carregamento da fonte "Press Start 2P"
+    this.scene.add.text(0, 0, '', {
+      fontFamily: '"Press Start 2P", monospace',
+      fontSize: '1px',
+    }).setAlpha(0); // invisível
+
     this.#eventBusComponent.on(CUSTOM_EVENTS.PLAYER_DESTROYED, () => {
       this.#lives -= 1;
       this.getAt(this.#lives).destroy();
@@ -35,11 +41,9 @@ export class Lives extends Phaser.GameObjects.Container {
       const centerX = this.scene.scale.width / 2;
       const centerY = this.scene.scale.height / 2;
 
-      // Overlay escuro
       const overlay = this.scene.add.rectangle(0, 0, this.scene.scale.width, this.scene.scale.height, 0x000000, 0.6);
       overlay.setOrigin(0);
 
-      // Texto "GAME OVER"
       const gameOverText = this.scene.add
         .text(centerX, centerY - 60, 'GAME OVER', {
           fontFamily: '"Press Start 2P", monospace',
@@ -64,6 +68,8 @@ export class Lives extends Phaser.GameObjects.Container {
         color: '#ffffff',
         backgroundColor: '#000000',
         padding: { left: 12, right: 12, top: 6, bottom: 6 },
+        fixedWidth: 320,
+        align: 'center',
       };
 
       // Botão "JOGAR NOVAMENTE"
@@ -72,8 +78,8 @@ export class Lives extends Phaser.GameObjects.Container {
         .setInteractive();
 
       retryBtn.on('pointerdown', () => this.scene.scene.restart());
-      retryBtn.on('pointerover', () => retryBtn.setStyle({ backgroundColor: '#ff2f66' }));
-      retryBtn.on('pointerout', () => retryBtn.setStyle({ backgroundColor: '#000000' }));
+      retryBtn.on('pointerover', () => retryBtn.setStyle({ backgroundColor: '#ff2f66', color: '#000000' }));
+      retryBtn.on('pointerout', () => retryBtn.setStyle({ backgroundColor: '#000000', color: '#ffffff' }));
 
       // Botão "VOLTAR PARA O MENU"
       const menuBtn = this.scene.add.text(centerX, centerY + 70, 'VOLTAR PARA O MENU', buttonStyle)
@@ -81,8 +87,8 @@ export class Lives extends Phaser.GameObjects.Container {
         .setInteractive();
 
       menuBtn.on('pointerdown', () => this.scene.scene.start('MenuScene'));
-      menuBtn.on('pointerover', () => menuBtn.setStyle({ backgroundColor: '#ff2f66' }));
-      menuBtn.on('pointerout', () => menuBtn.setStyle({ backgroundColor: '#000000' }));
+      menuBtn.on('pointerover', () => menuBtn.setStyle({ backgroundColor: '#ff2f66', color: '#000000' }));
+      menuBtn.on('pointerout', () => menuBtn.setStyle({ backgroundColor: '#000000', color: '#ffffff' }));
 
       this.#eventBusComponent.emit(CUSTOM_EVENTS.GAME_OVER);
     });

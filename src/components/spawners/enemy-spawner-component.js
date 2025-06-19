@@ -11,7 +11,6 @@ export class EnemySpawnerComponent {
   constructor(scene, enemyClass, spawnConfig, eventBusComponent) {
     this.#scene = scene;
 
-    // create group
     this.#group = this.#scene.add.group({
       name: `${this.constructor.name}-${Phaser.Math.RND.uuid()}`,
       classType: enemyClass,
@@ -25,7 +24,6 @@ export class EnemySpawnerComponent {
     this.#spawnAt = spawnConfig.spawnAt;
     this.#disableSpawning = false;
 
-    // handle automatic call to update
     this.#scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.#scene.physics.world.on(Phaser.Physics.Arcade.Events.WORLD_STEP, this.worldStep, this);
     this.#scene.events.once(

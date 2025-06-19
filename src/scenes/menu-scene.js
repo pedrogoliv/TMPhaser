@@ -23,7 +23,7 @@ export class MenuScene extends Phaser.Scene {
 
     // --- Botões principais ---
     this.add.image(width / 2, height / 2 - 100, 'header')
-      .setScale(0.25)
+      .setScale(0.30)
       .setOrigin(0.5);
 
     const startBtn = this.add.image(width / 2, height - 120, 'start_btn')
