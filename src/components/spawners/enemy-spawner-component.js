@@ -71,4 +71,8 @@ export class EnemySpawnerComponent {
       }
     });
   }
+
+  increaseDifficulty() {
+    this.#spawnInterval = Math.max(300, this.#spawnInterval - 200);
+  }
 }

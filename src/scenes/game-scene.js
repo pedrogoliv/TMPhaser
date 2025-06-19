@@ -32,9 +32,7 @@ export class GameScene extends Phaser.Scene {
 
     // Instanciar AudioManager com o MESMO eventBus
     const audioManager = new AudioManager(this, eventBusComponent);
-
-    this.music = this.sound.get('music'); // para poderes controlar no pause
-
+    this.music = this.sound.get('music');
 
     // Jogador
     const player = new Player(this, eventBusComponent);
@@ -102,27 +100,46 @@ export class GameScene extends Phaser.Scene {
     new Score(this, eventBusComponent);
     new Lives(this, eventBusComponent);
 
-    
+    // Variáveis de controlo da dificuldade
+    this.currentDifficulty = 0;
+    this.scoreValue = 0;
+
+    // Aumento automático da dificuldade a cada 1000 pontos
+    eventBusComponent.on(CUSTOM_EVENTS.ENEMY_DESTROYED, (enemy) => {
+      const key = enemy.shipAssetKey;
+      const scoreMap = {
+        scout: CONFIG.ENEMY_SCOUT_SCORE,
+        fighter: CONFIG.ENEMY_FIGHTER_SCORE
+      };
+
+      this.scoreValue += scoreMap[key] ?? 0;
+
+      const nextThreshold = (this.currentDifficulty + 1) * 1000;
+
+      if (this.scoreValue >= nextThreshold) {
+        scoutSpawner.increaseDifficulty();
+        fighterSpawner.increaseDifficulty();
+        this.currentDifficulty++;
+      }
+    });
+
+    // Pausa
     this.isPaused = false;
     this.input.keyboard.on('keydown-ESC', () => this.togglePauseMenu());
     this.input.keyboard.on('keydown-P', () => this.togglePauseMenu());
   }
 
   togglePauseMenu() {
-  if (!this.scene.isPaused()) {
-    this.music?.pause();             // Pausa a música
-    this.scene.launch('PauseScene'); // Mostra o menu
-    this.scene.pause();              // Pausa a lógica toda da GameScene
+    if (!this.scene.isPaused()) {
+      this.music?.pause();
+      this.scene.launch('PauseScene');
+      this.scene.pause();
+    }
   }
-}
 
-
-pauseGame() {
-  this.scene.launch('PauseScene');  // mostra menu
-  this.scene.pause();               // pausa tudo: updates, physics, spawners, etc.
-  this.music?.pause();              // pausa música
-}
-
-
-
+  pauseGame() {
+    this.scene.launch('PauseScene');
+    this.scene.pause();
+    this.music?.pause();
+  }
 }
