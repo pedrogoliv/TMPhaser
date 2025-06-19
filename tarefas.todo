@@ -13,9 +13,9 @@ Player:
   ✅ input and player movement @feito(18-06 19:22)
 
 Enemies:
-  ☐ create game object
-  ☐ create animations
-  ☐ basic AI movement
+  ✅ create game object
+  ✅ create animations
+  ✅ basic AI movement
   ☐ weapons
   ☐ phaser update and delta time
 
