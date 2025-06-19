@@ -6,7 +6,6 @@ export class MenuScene extends Phaser.Scene {
   }
 
   preload() {
-    // Botões e fundo do menu
     this.load.image('header', 'assets/images/menu/Header.png');
     this.load.image('start_btn', 'assets/images/menu/Start_BTN.png');
     this.load.image('exit_btn', 'assets/images/menu/Exit_BTN.png');
@@ -21,17 +20,15 @@ export class MenuScene extends Phaser.Scene {
   create() {
     const { width, height } = this.scale;
 
-    // --- Botões principais ---
-    this.add.image(width / 2, height / 2 - 100, 'header')
-      .setScale(0.30)
-      .setOrigin(0.5);
+    // Cabeçalho e botões principais
+    this.add.image(width / 2, height / 2 - 100, 'header').setScale(0.25).setOrigin(0.5);
 
-    const startBtn = this.add.image(width / 2, height - 120, 'start_btn')
+    this.add.image(width / 2, height - 120, 'start_btn')
       .setInteractive()
       .setScale(0.4)
       .on('pointerdown', () => this.scene.start('GameScene'));
 
-    const exitBtn = this.add.image(width / 2, height - 60, 'exit_btn')
+    this.add.image(width / 2, height - 60, 'exit_btn')
       .setInteractive()
       .setScale(0.4)
       .on('pointerdown', () => alert('Obrigado por jogar!'));
@@ -40,52 +37,48 @@ export class MenuScene extends Phaser.Scene {
       .setInteractive()
       .setScale(0.18);
 
-    // --- Overlay escurecido ---
+    // Overlay escuro
     const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.5)
       .setOrigin(0)
       .setDepth(1)
       .setVisible(false);
 
-    // --- Pop-up de definições ---
+    // Popup de definições
     const settingsPopup = this.add.container(width / 2, height / 2 + 10).setDepth(2);
 
     const bg = this.add.image(0, 0, 'settings_bg').setScale(0.06);
     const header = this.add.image(0, -100, 'settings_header').setScale(0.30);
 
-    // Volume inicial
-    let currentMusicVol = this.sound.volume ?? 0.6;
+    let currentMusicVol = this.registry.get('musicVolume') ?? 0.6;
     let currentFxVol = this.registry.get('fxVolume') ?? 0.6;
 
-    // --- Texto "MUSIC" (imagem) ---
+    // Label Music
     const musicLabel = this.add.image(0, -45, 'music_label').setScale(0.4).setOrigin(0.5);
-
-    // Música Slider abaixo do texto
     const musicSlider = this.add.rectangle(0, -25, 100, 6, 0x8888ff).setOrigin(0.5).setInteractive();
     const musicThumb = this.add.circle(-50 + (currentMusicVol * 100), -25, 6, 0xffffff).setInteractive();
+
+    const moveMusicThumb = (pointer) => {
+      const localX = Phaser.Math.Clamp(pointer.x - (width / 2) - musicSlider.x + 50, 0, 100);
+      musicThumb.x = musicSlider.x - 50 + localX;
+      const newVolume = +(localX / 100).toFixed(2);
+      this.registry.set('musicVolume', newVolume);
+
+      const music = this.sound.get('music');
+      if (music instanceof Phaser.Sound.WebAudioSound) {
+        music.setVolume(newVolume);
+      }
+      this.registry.set('musicVolume', newVolume);
+    };
 
     musicThumb.on('pointerdown', () => {
       this.input.on('pointermove', moveMusicThumb);
       this.input.once('pointerup', () => this.input.off('pointermove', moveMusicThumb));
     });
 
-    const moveMusicThumb = (pointer) => {
-      const localX = Phaser.Math.Clamp(pointer.x - (width / 2) - musicSlider.x + 50, 0, 100);
-      musicThumb.x = musicSlider.x - 50 + localX;
-      const newVolume = +(localX / 100).toFixed(2);
-      this.sound.volume = newVolume;
-    };
-
-    // Texto "SOUND" (imagem)
+    // Label Sound
     const fxLabel = this.add.image(0, 20, 'sound_label').setScale(0.4).setOrigin(0.5);
-
-    // FX Slider abaixo do texto
     const fxSlider = this.add.rectangle(0, 40, 100, 6, 0xff8888).setOrigin(0.5).setInteractive();
     const fxThumb = this.add.circle(-50 + (currentFxVol * 100), 40, 6, 0xffffff).setInteractive();
-
-    fxThumb.on('pointerdown', () => {
-      this.input.on('pointermove', moveFXThumb);
-      this.input.once('pointerup', () => this.input.off('pointermove', moveFXThumb));
-    });
 
     const moveFXThumb = (pointer) => {
       const localX = Phaser.Math.Clamp(pointer.x - (width / 2) - fxSlider.x + 50, 0, 100);
@@ -94,7 +87,11 @@ export class MenuScene extends Phaser.Scene {
       this.registry.set('fxVolume', newVolume);
     };
 
-    // Adiciona ao container
+    fxThumb.on('pointerdown', () => {
+      this.input.on('pointermove', moveFXThumb);
+      this.input.once('pointerup', () => this.input.off('pointermove', moveFXThumb));
+    });
+
     settingsPopup.add([
       bg, header,
       musicLabel, musicSlider, musicThumb,
@@ -103,13 +100,11 @@ export class MenuScene extends Phaser.Scene {
 
     settingsPopup.setVisible(false);
 
-    // Mostrar popup
     settingsBtn.on('pointerdown', () => {
       settingsPopup.setVisible(true);
       overlay.setVisible(true);
     });
 
-    // ESC para fechar
     this.input.keyboard.on('keydown-ESC', () => {
       if (settingsPopup.visible) {
         settingsPopup.setVisible(false);
