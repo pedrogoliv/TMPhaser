@@ -1,12 +1,16 @@
 import { BotFighterInputComponent } from "../../../components/input/bot-fighter-input-component.js";
 import { VerticalMovementComponent } from "../../../components/movement/vertical-movement-component.js";
 import { WeaponComponent } from "../../../components/weapon/weapon-component.js";
+import { ColliderComponent } from '../../../components/collider/collider-component.js';
+import { HealthComponent } from '../../../components/health/health-component.js';
 import * as CONFIG from "../../../src/config.js";
 
 export class FighterEnemy extends Phaser.GameObjects.Container {
     #inputComponent;
     #weaponComponent;
     #verticalMovementComponent;
+    #healthComponent;
+    #colliderComponent;
     #shipSprite;
     #shipEngineSprite;
     
@@ -36,15 +40,43 @@ export class FighterEnemy extends Phaser.GameObjects.Container {
             maxCount: CONFIG.ENEMY_FIGHTER_BULLET_MAX_COUNT,
             yOffset: 10,
             flipY: true,
-        })
+        });
+
+        this.#healthComponent = new HealthComponent(CONFIG.ENEMY_FIGHTER_HEALTH);
+        this.#colliderComponent = new ColliderComponent(this.#healthComponent);
     
         this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
         this.once(Phaser.GameObjects.Events.DESTROY, () => {
             this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
         }, this);
     }
+
+    get colliderComponent() {
+        return this.#colliderComponent;
+    }
+
+    get healthComponent() {
+        return this.#healthComponent;
+    }
     
+    get weaponGameObjectGroup() {
+        return this.#weaponComponent.bulletGroup;
+    }
+
+    get weaponComponent() {
+        return this.#weaponComponent;
+    }
+
     update(ts, dt) {
+        if (!this.active) {
+            return;
+        }
+
+        if (this.#healthComponent.isDead){
+            this.setActive(false);
+            this.setVisible(false);
+        }
+
         this.#inputComponent.update();
         this.#verticalMovementComponent.update();
         this.#weaponComponent.update(dt);

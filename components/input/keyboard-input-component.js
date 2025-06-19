@@ -22,4 +22,12 @@ export class KeyboardInputComponent extends InputComponent {
         this._right = this.#cursorKeys.right.isDown;
         this._shoot = this.#cursorKeys.space.isDown;
     }
+    
+    get lockInput() {
+        return this.#inputLocked;
+    }
+
+    set lockInput(value) {
+        this.#inputLocked = value;
+    }
 }
