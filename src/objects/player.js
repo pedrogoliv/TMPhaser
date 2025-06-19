@@ -56,7 +56,8 @@ export class Player extends Phaser.GameObjects.Container {
       this.#eventBusComponent
     );
     this.#healthComponent = new HealthComponent(CONFIG.PLAYER_HEALTH);
-    this.#colliderComponent = new ColliderComponent(this.#healthComponent, this.#eventBusComponent);
+    this.#colliderComponent = new ColliderComponent(this.#healthComponent, this.#eventBusComponent, this);
+
 
     this.#hide();
     this.#eventBusComponent.on(CUSTOM_EVENTS.PLAYER_SPAWN, this.#spawn, this);
