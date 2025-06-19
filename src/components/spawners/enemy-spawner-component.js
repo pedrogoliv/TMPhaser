@@ -18,6 +18,7 @@ export class EnemySpawnerComponent {
       createCallback: (enemy) => {
         enemy.init(eventBusComponent);
       },
+      maxSize: 20 // ou mais
     });
 
     this.#spawnInterval = spawnConfig.interval;
@@ -55,9 +56,6 @@ export class EnemySpawnerComponent {
     enemy.reset();
 
     this.#spawnAt = this.#spawnInterval;
-
-    // Debug: confirmar geração de inimigo
-    console.log(`[SPAWN] Novo inimigo. Próximo em ${this.#spawnInterval}ms`);
   }
 
   worldStep(delta) {
@@ -72,11 +70,10 @@ export class EnemySpawnerComponent {
   }
 
   increaseDifficulty() {
-    const newInterval = Math.max(300, this.#spawnInterval - 200);
+    const newInterval = Math.max(1000, this.#spawnInterval - 200);
     if (newInterval !== this.#spawnInterval) {
       this.#spawnInterval = newInterval;
-      this.#spawnAt = Math.min(this.#spawnAt, this.#spawnInterval); // força novo spawn mais cedo se estiver muito longe
-      console.log(`[DIFICULDADE] Novo intervalo: ${this.#spawnInterval}ms`);
+      this.#spawnAt = Math.min(this.#spawnAt, this.#spawnInterval);
     }
   }
 }

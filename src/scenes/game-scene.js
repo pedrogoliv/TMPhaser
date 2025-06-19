@@ -114,7 +114,7 @@ export class GameScene extends Phaser.Scene {
 
       this.scoreValue += scoreMap[key] ?? 0;
 
-      const nextThreshold = (this.currentDifficulty + 1) * 300;
+      const nextThreshold = (this.currentDifficulty + 1) * 1000;
 
       if (this.scoreValue >= nextThreshold) {
         scoutSpawner.increaseDifficulty();
