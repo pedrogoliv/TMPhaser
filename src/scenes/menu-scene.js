@@ -6,6 +6,8 @@ export class MenuScene extends Phaser.Scene {
   }
 
   preload() {
+    this.load.image('menu_bg', 'assets/images/menu/BG.png');
+
     this.load.image('header', 'assets/images/menu/Header.png');
     this.load.image('start_btn', 'assets/images/menu/Start_BTN.png');
     this.load.image('exit_btn', 'assets/images/menu/Exit_BTN.png');
@@ -20,30 +22,40 @@ export class MenuScene extends Phaser.Scene {
   create() {
     const { width, height } = this.scale;
 
-    // Cabeçalho e botões principais
-    this.add.image(width / 2, height / 2 - 100, 'header').setScale(0.25).setOrigin(0.5);
+    // 🌌 Fundo
+    this.add.image(width / 2, height / 2, 'menu_bg')
+      .setOrigin(0.5)
+      .setDisplaySize(width, height);
 
+    // Cabeçalho
+    this.add.image(width / 2, height / 2 - 100, 'header')
+      .setScale(0.25)
+      .setOrigin(0.5);
+
+    // Botão START
     this.add.image(width / 2, height - 120, 'start_btn')
       .setInteractive()
       .setScale(0.4)
       .on('pointerdown', () => this.scene.start('GameScene'));
 
+    // Botão EXIT
     this.add.image(width / 2, height - 60, 'exit_btn')
       .setInteractive()
       .setScale(0.4)
       .on('pointerdown', () => alert('Obrigado por jogar!'));
 
+    // Botão SETTINGS
     const settingsBtn = this.add.image(width - 40, 40, 'settings_btn')
       .setInteractive()
       .setScale(0.18);
 
-    // Overlay escuro
+    // Overlay escurecido
     const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.5)
       .setOrigin(0)
       .setDepth(1)
       .setVisible(false);
 
-    // Popup de definições
+    // Popup definições
     const settingsPopup = this.add.container(width / 2, height / 2 + 10).setDepth(2);
 
     const bg = this.add.image(0, 0, 'settings_bg').setScale(0.06);
@@ -52,7 +64,7 @@ export class MenuScene extends Phaser.Scene {
     let currentMusicVol = this.registry.get('musicVolume') ?? 0.6;
     let currentFxVol = this.registry.get('fxVolume') ?? 0.6;
 
-    // Label Music
+    // MUSIC
     const musicLabel = this.add.image(0, -45, 'music_label').setScale(0.4).setOrigin(0.5);
     const musicSlider = this.add.rectangle(0, -25, 100, 6, 0x8888ff).setOrigin(0.5).setInteractive();
     const musicThumb = this.add.circle(-50 + (currentMusicVol * 100), -25, 6, 0xffffff).setInteractive();
@@ -67,7 +79,6 @@ export class MenuScene extends Phaser.Scene {
       if (music instanceof Phaser.Sound.WebAudioSound) {
         music.setVolume(newVolume);
       }
-      this.registry.set('musicVolume', newVolume);
     };
 
     musicThumb.on('pointerdown', () => {
@@ -75,7 +86,7 @@ export class MenuScene extends Phaser.Scene {
       this.input.once('pointerup', () => this.input.off('pointermove', moveMusicThumb));
     });
 
-    // Label Sound
+    // SOUND FX
     const fxLabel = this.add.image(0, 20, 'sound_label').setScale(0.4).setOrigin(0.5);
     const fxSlider = this.add.rectangle(0, 40, 100, 6, 0xff8888).setOrigin(0.5).setInteractive();
     const fxThumb = this.add.circle(-50 + (currentFxVol * 100), 40, 6, 0xffffff).setInteractive();
@@ -92,6 +103,7 @@ export class MenuScene extends Phaser.Scene {
       this.input.once('pointerup', () => this.input.off('pointermove', moveFXThumb));
     });
 
+    // Adicionar tudo ao popup
     settingsPopup.add([
       bg, header,
       musicLabel, musicSlider, musicThumb,
@@ -100,11 +112,13 @@ export class MenuScene extends Phaser.Scene {
 
     settingsPopup.setVisible(false);
 
+    // Abrir definições
     settingsBtn.on('pointerdown', () => {
       settingsPopup.setVisible(true);
       overlay.setVisible(true);
     });
 
+    // Fechar com ESC
     this.input.keyboard.on('keydown-ESC', () => {
       if (settingsPopup.visible) {
         settingsPopup.setVisible(false);
