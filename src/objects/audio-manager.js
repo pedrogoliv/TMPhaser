@@ -9,17 +9,14 @@ export class AudioManager {
     this.#scene = scene;
     this.#eventBusComponent = eventBusComponent;
 
-    // Volume inicial da música
     const musicVol = this.#scene.registry.get('musicVolume') ?? 0.6;
 
-    // Música de fundo
     this.#backgroundMusic = this.#scene.sound.add('music', {
       volume: musicVol,
       loop: true,
     });
     this.#backgroundMusic.play();
 
-    // Efeitos sonoros com volume separado
     const getFXVolume = () => this.#scene.registry.get('fxVolume') ?? 0.6;
 
     this.#eventBusComponent.on(CUSTOM_EVENTS.ENEMY_DESTROYED, () => {
@@ -38,7 +35,6 @@ export class AudioManager {
       this.#scene.sound.play('shot', { volume: getFXVolume() * 0.1 });
     });
 
-    // Debug opcional
     const allEvents = [
       CUSTOM_EVENTS.ENEMY_INIT,
       CUSTOM_EVENTS.ENEMY_DESTROYED,
@@ -49,7 +45,6 @@ export class AudioManager {
       CUSTOM_EVENTS.SHIP_SHOOT,
     ];
 
-    // Limpar som ao sair da cena
     this.#scene.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.#backgroundMusic.stop();
     });

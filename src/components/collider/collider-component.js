@@ -7,7 +7,7 @@ export class ColliderComponent {
 constructor(healthComponent, eventBusComponent, owner = null) {
   this.#healthComponent = healthComponent;
   this.#eventBusComponent = eventBusComponent;
-  this.owner = owner; // pode ser o player, por exemplo
+  this.owner = owner;
 }
 
 

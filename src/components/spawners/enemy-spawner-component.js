@@ -18,7 +18,7 @@ export class EnemySpawnerComponent {
       createCallback: (enemy) => {
         enemy.init(eventBusComponent);
       },
-      maxSize: 20 // ou mais
+      maxSize: 20
     });
 
     this.#spawnInterval = spawnConfig.interval;

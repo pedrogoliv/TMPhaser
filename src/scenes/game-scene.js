@@ -22,22 +22,17 @@ export class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // Background animado
     this.add.sprite(0, 0, 'bg1', 0).setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg1');
     this.add.sprite(0, 0, 'bg2', 0).setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg2');
     this.add.sprite(0, 0, 'bg3', 0).setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg3');
 
-    // Instanciar EventBus
     const eventBusComponent = new EventBusComponent();
 
-    // Instanciar AudioManager com o MESMO eventBus
     const audioManager = new AudioManager(this, eventBusComponent);
     this.music = this.sound.get('music');
 
-    // Jogador
     const player = new Player(this, eventBusComponent);
 
-    // Enemies
     const scoutSpawner = new EnemySpawnerComponent(
       this,
       ScoutEnemy,
@@ -60,7 +55,6 @@ export class GameScene extends Phaser.Scene {
 
     new EnemyDestroyedComponent(this, eventBusComponent);
 
-    // Colisões jogador vs inimigos
     this.physics.add.overlap(player, scoutSpawner.phaserGroup, (playerGameObject, enemyGameObject) => {
       if (!playerGameObject.active || !enemyGameObject.active) return;
       playerGameObject.colliderComponent.collideWithEnemyShip();
@@ -73,7 +67,6 @@ export class GameScene extends Phaser.Scene {
       enemyGameObject.colliderComponent.collideWithEnemyShip();
     });
 
-    // Colisões de projéteis dos inimigos
     eventBusComponent.on(CUSTOM_EVENTS.ENEMY_INIT, (gameObject) => {
       if (gameObject.constructor.name !== 'FighterEnemy') return;
 
@@ -84,7 +77,6 @@ export class GameScene extends Phaser.Scene {
       });
     });
 
-    // Colisões das balas do jogador com inimigos
     this.physics.add.overlap(scoutSpawner.phaserGroup, player.weaponGameObjectGroup, (enemyGameObject, projectileGameObject) => {
       if (!enemyGameObject.active || !projectileGameObject.active) return;
       player.weaponComponent.destroyBullet(projectileGameObject);
@@ -100,11 +92,9 @@ export class GameScene extends Phaser.Scene {
     new Score(this, eventBusComponent);
     new Lives(this, eventBusComponent);
 
-    // Variáveis de controlo da dificuldade
     this.currentDifficulty = 0;
     this.scoreValue = 0;
 
-    // Aumento automático da dificuldade a cada 1000 pontos
     eventBusComponent.on(CUSTOM_EVENTS.ENEMY_DESTROYED, (enemy) => {
       const key = enemy.shipAssetKey;
       const scoreMap = {
