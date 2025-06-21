@@ -7,9 +7,11 @@ export class EnemySpawnerComponent {
   #spawnAt;
   #group;
   #disableSpawning;
+  #eventBusComponent;
 
   constructor(scene, enemyClass, spawnConfig, eventBusComponent) {
     this.#scene = scene;
+    this.#eventBusComponent = eventBusComponent;
 
     this.#group = this.#scene.add.group({
       name: `${this.constructor.name}-${Phaser.Math.RND.uuid()}`,
@@ -36,8 +38,8 @@ export class EnemySpawnerComponent {
       this
     );
 
-    eventBusComponent.on(CUSTOM_EVENTS.GAME_OVER, () => {
-      this.#disableSpawning = true;
+    this.#eventBusComponent.on(CUSTOM_EVENTS.GAME_OVER, () => {
+      this.stop();
     });
   }
 
@@ -53,7 +55,12 @@ export class EnemySpawnerComponent {
 
     const x = Phaser.Math.RND.between(30, this.#scene.scale.width - 30);
     const enemy = this.#group.get(x, -20);
+    if (!enemy) return;
+
     enemy.reset();
+
+    // ✅ Correção: usa this.#eventBusComponent
+    this.#eventBusComponent.emit(CUSTOM_EVENTS.ENEMY_INIT, enemy);
 
     this.#spawnAt = this.#spawnInterval;
   }
@@ -75,5 +82,9 @@ export class EnemySpawnerComponent {
       this.#spawnInterval = newInterval;
       this.#spawnAt = Math.min(this.#spawnAt, this.#spawnInterval);
     }
+  }
+
+  stop() {
+    this.#disableSpawning = true;
   }
 }
