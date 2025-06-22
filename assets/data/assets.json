@@ -82,7 +82,14 @@
         "key": "invincibility",
         "url": "Invincibility.png",
         "frameConfig": { "frameWidth": 64, "frameHeight": 64 }
+      },
+      {
+      "type": "spritesheet",
+      "key": "shield",
+      "url": "Shield.png",
+      "frameConfig": { "frameWidth": 64, "frameHeight": 64 }
       }
+
     ]
   },
   {

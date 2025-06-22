@@ -65,5 +65,13 @@
     "frameRate": 12,
     "repeat": -1,
     "assetKey": "invincibility"
+  },
+  {
+    "key": "shield_powerup",
+    "frameRate": 12,
+    "repeat": -1,
+    "assetKey": "shield"
   }
+
+
 ]

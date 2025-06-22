@@ -170,4 +170,25 @@ export class Player extends Phaser.GameObjects.Container {
   get vidasRestantes() {
     return this.#vidasRestantes;
   }
+
+  activateShield() {
+
+  if (this.#invulneravel) return;
+
+  this.#invulneravel = true;
+  this.setAlpha(0.5);
+
+  this.#shieldSprite = this.scene.add.sprite(this.x, this.y, 'invincibility');
+  this.#shieldSprite.setDepth(5).setScale(1.4).play('invincible_shield');
+
+  this.scene.time.delayedCall(4000, () => {
+    this.#invulneravel = false;
+    this.setAlpha(1);
+    if (this.#shieldSprite) {
+      this.#shieldSprite.destroy();
+      this.#shieldSprite = null;
+    }
+  });
+}
+
 }
