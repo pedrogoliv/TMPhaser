@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { BaseLevelScene } from './base-level-scene.js';
 
 export class Level4Scene extends BaseLevelScene {
@@ -9,8 +10,8 @@ export class Level4Scene extends BaseLevelScene {
     this.levelConfig = {
       modo: 'sem-armas',
       scoutInterval: 1000,
-      fighterInterval: 1500,
-      tempoLimite: 30000, 
+      fighterInterval: 1250,
+      tempoLimite: 30000,
       enemyLimit: 9999,
       nextLevel: 'Level5Scene',
     };
@@ -20,6 +21,13 @@ export class Level4Scene extends BaseLevelScene {
     super.init(this.levelConfig);
     super.create();
 
+    this.scene.launch('InstructionScene', {
+      parentScene: this.scene.key,
+      levelConfig: this.levelConfig,
+      getDescricaoNivel: this.getDescricaoNivel.bind(this),
+    });
+    this.scene.pause(this.scene.key);
+
     if (this.player?.weaponComponent) {
       this.player.weaponComponent.disableWeapon?.();
     }
@@ -27,5 +35,12 @@ export class Level4Scene extends BaseLevelScene {
     this.time.delayedCall(this.levelConfig.tempoLimite, () => {
       this.onLevelComplete();
     });
+  }
+
+  getDescricaoNivel() {
+    return `Sobrevive 30 segundos sem armas!\n\n` +
+           `3 Estrelas: 3 vidas restantes\n` +
+           `2 Estrelas: 2 vidas\n` +
+           `1 Estrela: 1 vida`;
   }
 }

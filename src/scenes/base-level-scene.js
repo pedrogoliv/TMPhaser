@@ -54,7 +54,7 @@ export class BaseLevelScene extends Phaser.Scene {
 
     this.eventBus.on(CUSTOM_EVENTS.GAME_OVER, () => {
       this.destroySpawners();
-
+      if (this.modo === 'tempo') {
       this.scene.launch('VictoryScene', {
         score: this.scoreValue,
         nextLevel: this.levelConfig.nextLevel,
@@ -62,6 +62,7 @@ export class BaseLevelScene extends Phaser.Scene {
         baseScene: this.scene.key,
         stars: ['Star_01', 'Star_01', 'Star_01'],
       });
+      }
 
       this.scene.pause();
       this.audioManager?.stop?.();
@@ -190,6 +191,15 @@ export class BaseLevelScene extends Phaser.Scene {
       return ['Star_01', 'Star_01', 'Star_01'];
     }
 
+    if (this.levelConfig?.modo === 'tempo-kill' && this.destroyedEnemies >= this.levelConfig.killObjective) {
+      this.tempoFinal = this.time.now - this.tempoInicio;
+      const [three, two, one] = this.levelConfig.timeThresholds ?? [20000, 30000, 45000];
+      if (this.tempoFinal <= three) return ['Star_03', 'Star_03', 'Star_03'];
+      if (this.tempoFinal <= two) return ['Star_03', 'Star_03', 'Star_02'];
+      if (this.tempoFinal <= one) return ['Star_03', 'Star_02', 'Star_01'];
+      return ['Star_01', 'Star_01', 'Star_01'];
+    }
+
     if (this.levelConfig.modo === 'sniper') {
       const kills = this.destroyedEnemies;
       const balas = this.balasDisparadas;
@@ -228,6 +238,7 @@ export class BaseLevelScene extends Phaser.Scene {
 
   onLevelComplete() {
     this.destroySpawners();
+
     this.scene.launch('VictoryScene', {
       score: this.scoreValue,
       nextLevel: this.levelConfig.nextLevel,
@@ -235,6 +246,7 @@ export class BaseLevelScene extends Phaser.Scene {
       baseScene: this.scene.key,
       stars: this.getStarRating(this.scoreValue),
     });
+
     this.scene.pause();
     this.audioManager?.stop?.();
   }
