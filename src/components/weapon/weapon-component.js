@@ -110,7 +110,7 @@ export class WeaponComponent {
     scene.tweens.add({
       targets: laser,
       scaleY: scaleY,
-      duration: 500,
+      duration: 100,
       ease: 'Sine.easeOut'
     });
 

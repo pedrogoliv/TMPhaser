@@ -36,7 +36,7 @@ export class GameScene extends Phaser.Scene {
 
     
 
-    const scoutSpawner = new EnemySpawnerComponent(this, ScoutEnemy, {
+    this.scoutSpawner = new EnemySpawnerComponent(this, ScoutEnemy, {
       interval: CONFIG.ENEMY_SCOUT_GROUP_SPAWN_INTERVAL,
       spawnAt: CONFIG.ENEMY_SCOUT_GROUP_SPAWN_START,
     }, eventBusComponent);
@@ -156,8 +156,6 @@ export class GameScene extends Phaser.Scene {
       delay: 20000, // mudar aqui pra testar (20000 = 20 segundos)
       loop: true,
       callback: () => {
-        if (Math.random() < 0.7) return;
-
         const x = Phaser.Math.Between(50, this.scale.width - 50);
         const zapper = new ZapperPowerUp(this, x, -20);
 
