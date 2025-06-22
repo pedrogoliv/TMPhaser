@@ -144,7 +144,6 @@ export class WeaponComponent {
           laser.destroy();
           followTimer.remove();
 
-          // Volta ao config original AGORA
           this.#bulletConfig = { ...this.#originalBulletConfig };
           this.#isZapperMode = false;
 
