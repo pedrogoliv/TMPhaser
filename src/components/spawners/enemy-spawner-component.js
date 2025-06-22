@@ -8,6 +8,7 @@ export class EnemySpawnerComponent {
   #group;
   #disableSpawning;
   #eventBusComponent;
+  #isDestroyed = false;
 
   constructor(scene, enemyClass, spawnConfig, eventBusComponent) {
     this.#scene = scene;
@@ -31,14 +32,7 @@ export class EnemySpawnerComponent {
     this.#scene.physics.world.on(Phaser.Physics.Arcade.Events.WORLD_STEP, this.worldStep, this);
     this.#scene.events.once(
       Phaser.Scenes.Events.DESTROY,
-      () => {
-        if (this.#scene?.events) {
-          this.#scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
-        }
-        if (this.#scene?.physics?.world) {
-          this.#scene.physics.world.off(Phaser.Physics.Arcade.Events.WORLD_STEP, this.worldStep, this);
-        }
-      },
+      () => this.destroy(),
       this
     );
 
@@ -52,8 +46,8 @@ export class EnemySpawnerComponent {
   }
 
   update(ts, dt) {
-    if (this.#disableSpawning || !this.#group) return;
-
+    if (this.#isDestroyed || this.#disableSpawning || !this.#group || typeof this.#group.get !== 'function') return;
+    
     this.#spawnAt -= dt;
     if (this.#spawnAt > 0) return;
 
@@ -68,6 +62,8 @@ export class EnemySpawnerComponent {
 
 
   worldStep(delta) {
+    if (this.#isDestroyed || !this.#group) return;
+
     this.#group.getChildren().forEach((enemy) => {
       if (!enemy.active) return;
 
@@ -91,6 +87,8 @@ export class EnemySpawnerComponent {
   }
 
   destroy() {
+    this.#isDestroyed = true;
+
     if (this.#scene?.events) {
       this.#scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
     }
@@ -98,9 +96,9 @@ export class EnemySpawnerComponent {
       this.#scene.physics.world.off(Phaser.Physics.Arcade.Events.WORLD_STEP, this.worldStep, this);
     }
 
-    // opcionalmente limpa o grupo
     if (this.#group) {
-      this.#group.clear(true, true); // remove todos os inimigos
+      this.#group.clear(true, true);
+      this.#group = null;
     }
 
     this.#disableSpawning = true;
