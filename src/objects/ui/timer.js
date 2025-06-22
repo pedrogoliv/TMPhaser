@@ -15,7 +15,6 @@ export class TimerUI extends Phaser.GameObjects.Text {
     this.#tempoRestante = Math.ceil(tempoTotalMs / 1000);
     this.setText(this.#tempoRestante.toString());
 
-    // Atualiza o texto a cada segundo
     this.#timerEvent = scene.time.addEvent({
       delay: 1000,
       repeat: this.#tempoRestante - 1,

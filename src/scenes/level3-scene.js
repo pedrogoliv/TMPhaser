@@ -12,7 +12,7 @@ export class Level3Scene extends BaseLevelScene {
       fighterInterval: 4500,
       tempoLimite: 30000, // 30 segundos
       enemyLimit: 9999, // ilimitado até o tempo acabar
-      nextLevel: null, // ou 'Level4Scene' se tiver
+      nextLevel: 'Level4Scene', // ou 'Level4Scene' se tiver
       starKillThresholds: [10, 7, 3], // número de inimigos destruídos
     };
   }

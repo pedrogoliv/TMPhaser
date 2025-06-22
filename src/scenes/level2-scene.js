@@ -8,12 +8,12 @@ export class Level2Scene extends BaseLevelScene {
   init() {
     this.levelConfig = {
       modo: 'tempo',
-      enemyLimit: 50,
-      scoutInterval: 3000,
-      fighterInterval: 2211,
+      enemyLimit: 999,
+      scoutInterval: 2500,
+      fighterInterval: 1511,
       nextLevel: 'Level3Scene',
       starThresholds: [1800, 1200, 800],
-      tempoLimite: 30000,
+      tempoLimite: 45000,
     };
   }
 

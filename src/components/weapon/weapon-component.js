@@ -7,6 +7,7 @@ export class WeaponComponent {
   #fireBulletInterval;
   #bulletConfig;
   #eventBusComponent;
+  #disabled = false;
 
   constructor(gameObject, inputComponent, bulletConfig, eventBusComponent) {
     this.#gameObject = gameObject;
@@ -40,17 +41,23 @@ export class WeaponComponent {
     return this.#bulletGroup;
   }
 
+  disableWeapon() {
+    this.#disabled = true;
+  }
+
+  enableWeapon() {
+    this.#disabled = false;
+  }
+
   update(dt) {
+    if (this.#disabled) return;
+
     this.#fireBulletInterval -= dt;
-    if (this.#fireBulletInterval > 0) {
-      return;
-    }
+    if (this.#fireBulletInterval > 0) return;
 
     if (this.#inputComponent.shootIsDown) {
       const bullet = this.#bulletGroup.getFirstDead();
-      if (bullet === undefined || bullet === null) {
-        return;
-      }
+      if (!bullet) return;
 
       const x = this.#gameObject.x;
       const y = this.#gameObject.y + this.#bulletConfig.yOffset;
@@ -69,9 +76,7 @@ export class WeaponComponent {
 
   worldStep(delta) {
     this.#bulletGroup.getChildren().forEach((bullet) => {
-      if (!bullet.active) {
-        return;
-      }
+      if (!bullet.active) return;
 
       bullet.state -= delta;
       if (bullet.state <= 0) {

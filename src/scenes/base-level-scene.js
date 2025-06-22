@@ -113,7 +113,7 @@ export class BaseLevelScene extends Phaser.Scene {
       enemy.colliderComponent.collideWithEnemyProjectile();
     });
 
-    if (this.modo === 'tempo') {
+    if (this.modo === 'tempo' || this.modo === 'sem-armas') {
       new TimerUI(this, this.levelConfig.tempoLimite);
     } else {
       new Score(this, this.eventBus);
@@ -152,17 +152,14 @@ export class BaseLevelScene extends Phaser.Scene {
     if (this.modo === 'tempo' && this.levelConfig.starKillThresholds) {
       const kills = this.destroyedEnemies;
       const [three, two, one] = this.levelConfig.starKillThresholds;
-      console.log('[⭐️ Estrelas por kills em tempo]', kills);
-
       if (kills >= three) return ['Star_03', 'Star_03', 'Star_03'];
       if (kills >= two) return ['Star_03', 'Star_03', 'Star_02'];
       if (kills >= one) return ['Star_03', 'Star_02', 'Star_01'];
       return ['Star_01', 'Star_01', 'Star_01'];
     }
 
-    if (this.modo === 'tempo') {
+    if (this.modo === 'tempo' || this.modo === 'sem-armas') {
       const vidas = this.player?.vidasRestantes ?? 0;
-      console.log('[⭐️ Estrelas por vidas restantes]', vidas);
       if (vidas === 3) return ['Star_03', 'Star_03', 'Star_03'];
       if (vidas === 2) return ['Star_03', 'Star_03', 'Star_02'];
       if (vidas === 1) return ['Star_03', 'Star_02', 'Star_01'];
