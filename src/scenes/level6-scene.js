@@ -10,11 +10,11 @@ export class Level6Scene extends BaseLevelScene {
     this.levelConfig = {
       modo: 'tempo-kill',
       scoutInterval: 2000,
-      fighterInterval: 3500,
+      fighterInterval: 3000,
       enemyLimit: 9999,
       killObjective: 10,
       nextLevel: null,
-      timeThresholds: [30000, 45000, 60000],
+      timeThresholds: [50000, 35000, 25000],
     };
   }
 

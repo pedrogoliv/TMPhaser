@@ -17,6 +17,8 @@ export class MenuScene extends Phaser.Scene {
     this.load.image('music_label', 'assets/images/settings/Music.png');
     this.load.image('sound_label', 'assets/images/settings/Sound.png');
     this.load.image('map_btn', 'assets/images/menu/Map_BTN.png');
+    this.load.image('btnHighscore', 'assets/images/menu/Rating_BTN.png');
+    this.load.image('btnHighscoreActive', 'assets/images/menu/Rating_BTNActive.png'); 
   }
 
   create() {
@@ -109,6 +111,29 @@ export class MenuScene extends Phaser.Scene {
       .setVisible(false)
       .setDepth(3);
 
+    const highscoreBtn = this.add.image(width - 40, 100, 'btnHighscore')
+      .setInteractive()
+      .setScale(0.18)
+      .setDepth(3);
+
+    const highscoreBtnActive = this.add.image(width - 40, 100, 'btnHighscoreActive')
+      .setInteractive()
+      .setScale(0.18)
+      .setVisible(false)
+      .setDepth(3);
+
+    highscoreBtn.on('pointerdown', () => {
+      this.scene.launch('HighScoreScene');
+      highscoreBtn.setVisible(false);
+      highscoreBtnActive.setVisible(true);
+    });
+
+    highscoreBtnActive.on('pointerdown', () => {
+      this.scene.stop('HighScoreScene');
+      highscoreBtn.setVisible(true);
+      highscoreBtnActive.setVisible(false);
+    });
+
     settingsBtn.on('pointerdown', () => {
       settingsPopup.setVisible(true);
       overlay.setVisible(true);
@@ -124,17 +149,17 @@ export class MenuScene extends Phaser.Scene {
     });
 
     this.input.keyboard.on('keydown-ESC', () => {
-      if (settingsPopup.visible) {
-        settingsPopup.setVisible(false);
-        overlay.setVisible(false);
-        settingsBtn.setVisible(true);
-        settingsBtnActive.setVisible(false);
-      } else {
-        settingsPopup.setVisible(true);
-        overlay.setVisible(true);
-        settingsBtn.setVisible(false);
-        settingsBtnActive.setVisible(true);
-      }
+      const showingSettings = settingsPopup.visible;
+
+      settingsPopup.setVisible(!showingSettings);
+      overlay.setVisible(!showingSettings);
+      settingsBtn.setVisible(showingSettings);
+      settingsBtnActive.setVisible(!showingSettings);
+    });
+
+    this.events.on('wake', () => {
+      highscoreBtn.setVisible(true);
+      highscoreBtnActive.setVisible(false);
     });
   }
 }

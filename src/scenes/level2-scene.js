@@ -13,7 +13,7 @@ export class Level2Scene extends BaseLevelScene {
       scoutInterval: 2500,
       fighterInterval: 1500,
       nextLevel: 'Level3Scene',
-      tempoLimite: 10000,
+      tempoLimite: 60000,
     };
   }
 

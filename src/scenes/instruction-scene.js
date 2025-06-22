@@ -29,7 +29,7 @@ export class InstructionScene extends Phaser.Scene {
 
     if (modo === 'tempo-kill' && config.killObjective !== undefined) {
       const [one, two, three] = config.timeThresholds ?? [45000, 30000, 20000];
-      tituloTexto = `Elimina ${config.killObjective} inimigos\nO mais rápido possível!`;
+      tituloTexto = `Elimina ${config.killObjective} inimigos o mais rápido possível!`;
       linhas = [
         `3 Estrelas: até ${three / 1000}s`,
         `2 Estrelas: até ${two / 1000}s`,
