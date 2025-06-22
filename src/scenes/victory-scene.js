@@ -103,9 +103,9 @@ export class VictoryScene extends Phaser.Scene {
   }
 
   restartLevel() {
-    this.scene.stop();
-    this.scene.stop(this.previousScene);
-    this.scene.start(this.previousScene);
+    this.scene.stop(this.previousScene);     // Pausa ou encerra a cena anterior
+    this.scene.stop(this.scene.key);         // Fecha a VictoryScene
+    this.scene.start(this.previousScene);    // Recomeça a cena anterior do zero
   }
 
   goToNextLevel() {

@@ -19,6 +19,7 @@ export class Player extends Phaser.GameObjects.Container {
   #shieldSprite;
   #invulneravel = false;
   #primeiroSpawn = true;
+  #vidasRestantes = CONFIG.PLAYER_LIVES;
 
   constructor(scene, eventBusComponent) {
     super(scene, scene.scale.width / 2, scene.scale.height - 32, []);
@@ -142,6 +143,7 @@ export class Player extends Phaser.GameObjects.Container {
     if (this.#primeiroSpawn) {
       this.#primeiroSpawn = false;
     } else {
+      this.#vidasRestantes--;
       this.#invulneravel = true;
       this.setAlpha(0.5);
 
@@ -159,5 +161,13 @@ export class Player extends Phaser.GameObjects.Container {
         }
       });
     }
+  }
+
+  getVidas() {
+    return this.#healthComponent.life;
+  }
+
+  get vidasRestantes() {
+    return this.#vidasRestantes;
   }
 }
