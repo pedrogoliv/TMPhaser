@@ -47,6 +47,22 @@ export class BaseLevelScene extends Phaser.Scene {
       spawnAt: 5000,
     }, this.eventBus);
 
+        this.eventBus.on(CUSTOM_EVENTS.GAME_OVER, () => {
+      this.scoutSpawner?.destroy?.();
+      this.fighterSpawner?.destroy?.();
+
+      this.scene.launch('VictoryScene', {
+        score: this.scoreValue,
+        nextLevel: this.levelConfig.nextLevel,
+        previousScene: this.scene.key,
+        baseScene: this.scene.key,
+        stars: ['Star_01', 'Star_01', 'Star_01'], 
+      });
+
+      this.scene.pause();
+      this.audioManager?.stop?.();
+    });
+
     new EnemyDestroyedComponent(this, this.eventBus);
 
     this.physics.add.overlap(this.player, this.scoutSpawner.phaserGroup, (player, enemy) => {
@@ -133,6 +149,17 @@ export class BaseLevelScene extends Phaser.Scene {
   }
 
   getStarRating(score) {
+    if (this.modo === 'tempo' && this.levelConfig.starKillThresholds) {
+      const kills = this.destroyedEnemies;
+      const [three, two, one] = this.levelConfig.starKillThresholds;
+      console.log('[⭐️ Estrelas por kills em tempo]', kills);
+
+      if (kills >= three) return ['Star_03', 'Star_03', 'Star_03'];
+      if (kills >= two) return ['Star_03', 'Star_03', 'Star_02'];
+      if (kills >= one) return ['Star_03', 'Star_02', 'Star_01'];
+      return ['Star_01', 'Star_01', 'Star_01'];
+    }
+
     if (this.modo === 'tempo') {
       const vidas = this.player?.vidasRestantes ?? 0;
       console.log('[⭐️ Estrelas por vidas restantes]', vidas);
@@ -148,6 +175,7 @@ export class BaseLevelScene extends Phaser.Scene {
     if (score >= thresholds[2]) return ['Star_03', 'Star_02', 'Star_01'];
     return ['Star_01', 'Star_01', 'Star_01'];
   }
+
 
 
   onLevelComplete() {

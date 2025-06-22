@@ -7,6 +7,7 @@ import { PauseScene } from './scenes/pause-scene.js';
 import { TutorialScene } from './scenes/tutorial-scene.js';
 import { Level1Scene } from './scenes/level1-scene.js';
 import { Level2Scene } from './scenes/level2-scene.js';
+import { Level3Scene } from './scenes/level3-scene.js';
 import { VictoryScene } from './scenes/victory-scene.js';
 import { MapScene } from './scenes/map-scene.js';
 
@@ -23,7 +24,7 @@ const game = new Phaser.Game({
   },
   backgroundColor: '#000000',
   physics: {
-    default: 'arcade', // fazer com que o jogo funcione com a física "arcade", por exemplo desliga a gravidade
+    default: 'arcade',
     arcade: {
       gravity: { y: 0, x: 0 },
       debug: false,
@@ -39,6 +40,7 @@ game.scene.add('GameScene', GameScene);
 game.scene.add('PauseScene', PauseScene);
 game.scene.add('Level1Scene', Level1Scene);
 game.scene.add('Level2Scene', Level2Scene);
+game.scene.add('Level3Scene', Level3Scene);
 game.scene.add('VictoryScene', VictoryScene);
 game.scene.add('MapScene', MapScene);
 game.scene.start('BootScene');
