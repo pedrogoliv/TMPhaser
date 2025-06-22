@@ -11,6 +11,7 @@ import { Level3Scene } from './scenes/level3-scene.js';
 import { Level4Scene } from './scenes/level4-scene.js';
 import { Level5Scene } from './scenes/level5-scene.js';
 import { Level6Scene } from './scenes/level6-scene.js';
+import { InstructionScene } from './scenes/instruction-scene.js';
 import { VictoryScene } from './scenes/victory-scene.js';
 import { MapScene } from './scenes/map-scene.js';
 
@@ -48,5 +49,6 @@ game.scene.add('Level4Scene', Level4Scene);
 game.scene.add('Level5Scene', Level5Scene);
 game.scene.add('Level6Scene', Level6Scene);
 game.scene.add('VictoryScene', VictoryScene);
+game.scene.add('InstructionScene', InstructionScene);
 game.scene.add('MapScene', MapScene);
 game.scene.start('BootScene');
