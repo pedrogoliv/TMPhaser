@@ -27,6 +27,8 @@ export class BaseLevelScene extends Phaser.Scene {
     this.destroyedEnemies = 0;
     this.finalCheckTimer = null;
     this.balasDisparadas = 0;
+    this.tempoInicio = 0;
+    this.tempoFinal = 0;
   }
 
   create() {
@@ -114,7 +116,10 @@ export class BaseLevelScene extends Phaser.Scene {
       enemy.colliderComponent.collideWithEnemyProjectile();
     });
 
-    if (this.modo === 'tempo' || this.modo === 'sem-armas') {
+    this.tempoInicio = this.time.now;
+    if (this.modo === 'tempo-kill') {
+      this.timerUI = new TimerUI(this, null, true);
+    } else if (this.modo === 'tempo' || this.modo === 'sem-armas') {
       new TimerUI(this, this.levelConfig.tempoLimite);
     } else {
       new Score(this, this.eventBus);
@@ -131,14 +136,22 @@ export class BaseLevelScene extends Phaser.Scene {
       this.scoreValue += scoreMap[key] ?? 0;
       this.destroyedEnemies++;
 
-      console.log(`[DEBUG] Inimigos destruídos: ${this.destroyedEnemies}/${this.levelConfig.killObjective}`);
-
       if (
         this.levelConfig?.modo === 'sniper' &&
         this.destroyedEnemies >= this.levelConfig.killObjective
       ) {
-        console.log('[DEBUG] Objetivo de kills atingido → nível completo!');
-        console.log(`[DEBUG] Finalização do nível: ${this.destroyedEnemies} kills / ${this.balasDisparadas} balas`);
+        this.scoutSpawner.phaserGroup?.getChildren().forEach(child => child.setActive(false));
+        this.fighterSpawner.phaserGroup?.getChildren().forEach(child => child.setActive(false));
+        this.onLevelComplete();
+      }
+
+      if (
+        this.levelConfig?.modo === 'tempo-kill' &&
+        this.destroyedEnemies >= this.levelConfig.killObjective
+      ) {
+        this.tempoFinal = this.time.now - this.tempoInicio;
+
+        console.log(`[DEBUG] Objetivo atingido! Tempo total: ${this.tempoFinal} ms`);
 
         this.scoutSpawner.phaserGroup?.getChildren().forEach(child => child.setActive(false));
         this.fighterSpawner.phaserGroup?.getChildren().forEach(child => child.setActive(false));
@@ -146,6 +159,7 @@ export class BaseLevelScene extends Phaser.Scene {
         this.onLevelComplete();
       }
     });
+
 
     this.input.keyboard.on('keydown-ESC', () => this.togglePause());
     this.input.keyboard.on('keydown-P', () => this.togglePause());
@@ -169,6 +183,17 @@ export class BaseLevelScene extends Phaser.Scene {
   }
 
   getStarRating(score) {
+    if (this.levelConfig?.modo === 'tempo-kill' && this.destroyedEnemies >= this.levelConfig.killObjective) {
+      this.tempoFinal = this.time.now - this.tempoInicio;
+
+      const [three, two, one] = this.levelConfig.timeThresholds ?? [20000, 30000, 45000];
+
+      if (this.tempoFinal <= three) return ['Star_03', 'Star_03', 'Star_03'];
+      if (this.tempoFinal <= two) return ['Star_03', 'Star_03', 'Star_02'];
+      if (this.tempoFinal <= one) return ['Star_03', 'Star_02', 'Star_01'];
+      return ['Star_01', 'Star_01', 'Star_01'];
+    }
+
     if (this.levelConfig.modo === 'sniper') {
       const kills = this.destroyedEnemies;
       const balas = this.balasDisparadas;
