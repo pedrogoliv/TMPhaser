@@ -32,27 +32,26 @@ export class GameScene extends Phaser.Scene {
     this.music = this.sound.get('music');
     this.player = new Player(this, eventBusComponent);
 
-    
-
-    const scoutSpawner = new EnemySpawnerComponent(this, ScoutEnemy, {
+    // Definidos como propriedades da classe!
+    this.scoutSpawner = new EnemySpawnerComponent(this, ScoutEnemy, {
       interval: CONFIG.ENEMY_SCOUT_GROUP_SPAWN_INTERVAL,
       spawnAt: CONFIG.ENEMY_SCOUT_GROUP_SPAWN_START,
     }, eventBusComponent);
 
-    const fighterSpawner = new EnemySpawnerComponent(this, FighterEnemy, {
+    this.fighterSpawner = new EnemySpawnerComponent(this, FighterEnemy, {
       interval: CONFIG.ENEMY_FIGHTER_GROUP_SPAWN_INTERVAL,
       spawnAt: CONFIG.ENEMY_FIGHTER_GROUP_SPAWN_START,
     }, eventBusComponent);
 
     new EnemyDestroyedComponent(this, eventBusComponent);
 
-    this.physics.add.overlap(this.player, scoutSpawner.phaserGroup, (player, enemy) => {
+    this.physics.add.overlap(this.player, this.scoutSpawner.phaserGroup, (player, enemy) => {
       if (!player.active || !enemy.active) return;
       player.colliderComponent.collideWithEnemyShip();
       enemy.colliderComponent.collideWithEnemyShip();
     });
 
-    this.physics.add.overlap(this.player, fighterSpawner.phaserGroup, (player, enemy) => {
+    this.physics.add.overlap(this.player, this.fighterSpawner.phaserGroup, (player, enemy) => {
       if (!player.active || !enemy.active) return;
       player.colliderComponent.collideWithEnemyShip();
       enemy.colliderComponent.collideWithEnemyShip();
@@ -68,13 +67,13 @@ export class GameScene extends Phaser.Scene {
       });
     });
 
-    this.physics.add.overlap(scoutSpawner.phaserGroup, this.player.weaponGameObjectGroup, (enemy, bullet) => {
+    this.physics.add.overlap(this.scoutSpawner.phaserGroup, this.player.weaponGameObjectGroup, (enemy, bullet) => {
       if (!enemy.active || !bullet.active) return;
       this.player.weaponComponent.destroyBullet(bullet);
       enemy.colliderComponent.collideWithEnemyProjectile();
     });
 
-    this.physics.add.overlap(fighterSpawner.phaserGroup, this.player.weaponGameObjectGroup, (enemy, bullet) => {
+    this.physics.add.overlap(this.fighterSpawner.phaserGroup, this.player.weaponGameObjectGroup, (enemy, bullet) => {
       if (!enemy.active || !bullet.active) return;
       this.player.weaponComponent.destroyBullet(bullet);
       enemy.colliderComponent.collideWithEnemyProjectile();
@@ -121,7 +120,6 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
-
     this.currentDifficulty = 0;
     this.scoreValue = 0;
 
@@ -136,8 +134,8 @@ export class GameScene extends Phaser.Scene {
 
       const nextThreshold = (this.currentDifficulty + 1) * 1000;
       if (this.scoreValue >= nextThreshold) {
-        scoutSpawner.increaseDifficulty();
-        fighterSpawner.increaseDifficulty();
+        this.scoutSpawner.increaseDifficulty();
+        this.fighterSpawner.increaseDifficulty();
         this.currentDifficulty++;
       }
 
@@ -168,5 +166,10 @@ export class GameScene extends Phaser.Scene {
     this.scene.launch('PauseScene');
     this.scene.pause();
     this.music?.pause();
+  }
+
+  destroySpawners() {
+    this.scoutSpawner?.destroy?.();
+    this.fighterSpawner?.destroy?.();
   }
 }
