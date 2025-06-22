@@ -69,6 +69,8 @@ export class PauseScene extends Phaser.Scene {
       const sceneInstance = this.scene.get(previousSceneKey);
       sceneInstance?.destroySpawners?.();
 
+      const instance = this.scene.get(previousSceneKey);
+      instance?.destroySpawners?.();
       this.scene.stop(previousSceneKey);
       this.scene.stop();
 
