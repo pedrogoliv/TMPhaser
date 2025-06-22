@@ -16,6 +16,7 @@ export class MenuScene extends Phaser.Scene {
     this.load.image('settings_header', 'assets/images/settings/settings_header.png');
     this.load.image('music_label', 'assets/images/settings/Music.png');
     this.load.image('sound_label', 'assets/images/settings/Sound.png');
+    this.load.image('map_btn', 'assets/images/menu/Map_BTN.png');
   }
 
   create() {
@@ -33,6 +34,11 @@ export class MenuScene extends Phaser.Scene {
       .setInteractive()
       .setScale(0.4)
       .on('pointerdown', () => this.scene.start('TutorialScene'));
+
+    this.add.image(width / 2, height - 60, 'map_btn')
+      .setInteractive()
+      .setScale(0.4)
+      .on('pointerdown', () => this.scene.start('MapScene'));
 
     const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.5)
       .setOrigin(0)

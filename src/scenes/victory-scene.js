@@ -36,7 +36,16 @@ export class VictoryScene extends Phaser.Scene {
     const centerY = this.scale.height / 2;
 
     const venceu = !(this.stars.every(s => s === 'Star_01') || 
-                 (this.stars[0] === 'Star_02' && this.stars[1] === 'Star_01' && this.stars[2] === 'Star_01'));
+                (this.stars[0] === 'Star_02' && this.stars[1] === 'Star_01' && this.stars[2] === 'Star_01'));
+
+    if (venceu && this.nextLevel) {
+      const unlockedLevels = JSON.parse(localStorage.getItem('unlockedLevels')) || [1];
+      const nextLevelNum = parseInt(this.nextLevel.replace(/\D/g, ''));
+      if (!unlockedLevels.includes(nextLevelNum)) {
+        unlockedLevels.push(nextLevelNum);
+        localStorage.setItem('unlockedLevels', JSON.stringify(unlockedLevels));
+      }
+    }
 
     // Fundo escurecido
     const blur = this.add.graphics();
@@ -85,7 +94,12 @@ export class VictoryScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setScale(buttonScale)
       .setInteractive({ useHandCursor: true })
-      .on('pointerdown', () => this.scene.start('MenuScene'));
+      .on('pointerdown', () => {
+        this.scene.stop(this.previousScene);
+        this.scene.stop(this.baseScene);
+        this.scene.stop();
+        this.scene.start('MenuScene');
+      });
   }
 
   restartLevel() {
@@ -97,6 +111,13 @@ export class VictoryScene extends Phaser.Scene {
   goToNextLevel() {
     if (this.nextLevel) {
       this.scene.stop(this.baseScene);
+
+      const unlockedLevels = JSON.parse(localStorage.getItem('unlockedLevels')) || [1];
+      if (!unlockedLevels.includes(parseInt(this.nextLevel.replace(/\D/g, '')))) {
+        unlockedLevels.push(parseInt(this.nextLevel.replace(/\D/g, '')));
+        localStorage.setItem('unlockedLevels', JSON.stringify(unlockedLevels));
+      }
+
       this.scene.start(this.nextLevel);
     }
   }
