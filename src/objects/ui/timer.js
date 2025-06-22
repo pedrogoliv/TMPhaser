@@ -1,8 +1,9 @@
 export class TimerUI extends Phaser.GameObjects.Text {
-  #tempoRestante;
+  #tempo;
   #timerEvent;
+  #countUp;
 
-  constructor(scene, tempoTotalMs) {
+  constructor(scene, tempoTotalMs = null, countUp = false) {
     super(scene, scene.scale.width / 2, 35, '', {
       fontSize: '25px',
       fontStyle: 'bold',
@@ -12,17 +13,33 @@ export class TimerUI extends Phaser.GameObjects.Text {
     this.scene.add.existing(this);
     this.setOrigin(0.5);
 
-    this.#tempoRestante = Math.ceil(tempoTotalMs / 1000);
-    this.setText(this.#tempoRestante.toString());
+    this.#countUp = countUp;
 
-    this.#timerEvent = scene.time.addEvent({
-      delay: 1000,
-      repeat: this.#tempoRestante - 1,
-      callback: () => {
-        this.#tempoRestante -= 1;
-        this.setText(this.#tempoRestante.toString());
-      }
-    });
+    if (countUp) {
+      this.#tempo = 0;
+      this.setText('0');
+
+      this.#timerEvent = scene.time.addEvent({
+        delay: 1000,
+        loop: true,
+        callback: () => {
+          this.#tempo += 1;
+          this.setText(this.#tempo.toString());
+        }
+      });
+    } else {
+      this.#tempo = Math.ceil(tempoTotalMs / 1000);
+      this.setText(this.#tempo.toString());
+
+      this.#timerEvent = scene.time.addEvent({
+        delay: 1000,
+        repeat: this.#tempo - 1,
+        callback: () => {
+          this.#tempo -= 1;
+          this.setText(this.#tempo.toString());
+        }
+      });
+    }
   }
 
   destroy() {
