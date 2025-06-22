@@ -106,7 +106,7 @@ export class GameScene extends Phaser.Scene {
       delay: 30000,
       loop: true,
       callback: () => {
-        if (Math.random() < 0.5) return;
+        if (Math.random() < 0.65) return;
         const x = Phaser.Math.Between(50, this.scale.width - 50);
         const shield = new ShieldPowerUp(this, x, -20).setScale(1);
         this.physics.add.overlap(shield, this.player, () => {
