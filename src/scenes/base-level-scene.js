@@ -141,11 +141,15 @@ export class BaseLevelScene extends Phaser.Scene {
   }
 
   getStarRating(score) {
-    if (score >= 1800) return ['Star_03', 'Star_03', 'Star_03'];
-    if (score >= 1200) return ['Star_03', 'Star_03', 'Star_02'];
-    if (score >= 800) return ['Star_03', 'Star_02', 'Star_01'];
-    return ['Star_02', 'Star_01', 'Star_01'];
+    const thresholds = this.levelConfig.starThresholds ?? [1800, 1200, 800];
+
+    if (score >= thresholds[0]) return ['Star_03', 'Star_03', 'Star_03'];
+    if (score >= thresholds[1]) return ['Star_03', 'Star_03', 'Star_02'];
+    if (score >= thresholds[2]) return ['Star_03', 'Star_02', 'Star_01'];
+    return ['Star_01', 'Star_01', 'Star_01'];
   }
+
+
 
   onLevelComplete() {
     this.scene.launch('VictoryScene', {

@@ -10,12 +10,13 @@ export class Level1Scene extends BaseLevelScene {
       enemyLimit: 9,
       scoutInterval: 3500,
       fighterInterval: 2211,
-      nextLevel: 'Level2Scene'
+      nextLevel: 'Level2Scene',
+      starThresholds: [1800, 1200, 800],
     };
   }
 
   create() {
-    super.init(this.levelConfig); // <-- passa a config para o BaseLevelScene
-    super.create();               // <-- depois chama o create
+    super.init(this.levelConfig);
+    super.create();
   }
 }
