@@ -115,6 +115,10 @@ export class Player extends Phaser.GameObjects.Container {
     if (this.#shieldSprite && this.#invulneravel) {
       this.#shieldSprite.setPosition(this.x, this.y);
     }
+
+    if (this.#shieldSprite && this.#invulneravel && this.active) {
+      this.#shieldSprite.setPosition(this.x, this.y);
+}
   }
 
   #hide() {
@@ -149,7 +153,7 @@ export class Player extends Phaser.GameObjects.Container {
 
       this.#shieldSprite = this.scene.add.sprite(this.x, this.y, 'invincibility');
       this.#shieldSprite.setDepth(5);
-      this.#shieldSprite.setScale(1.4);
+      this.#shieldSprite.setScale(1);
       this.#shieldSprite.play('invincible_shield');
 
       this.scene.time.delayedCall(2000, () => {
@@ -171,24 +175,28 @@ export class Player extends Phaser.GameObjects.Container {
     return this.#vidasRestantes;
   }
 
-  activateShield() {
-
-  if (this.#invulneravel) return;
-
+activateShield(useBlueShield = false) {
   this.#invulneravel = true;
-  this.setAlpha(0.5);
+  this.setAlpha(1);
 
-  this.#shieldSprite = this.scene.add.sprite(this.x, this.y, 'invincibility');
-  this.#shieldSprite.setDepth(5).setScale(1.4).play('invincible_shield');
+  if (this.#shieldSprite) this.#shieldSprite.destroy();
+
+  const texture = useBlueShield ? 'shield' : 'invincibility';
+
+  this.#shieldSprite = this.scene.add.sprite(this.x, this.y, texture);
+  this.#shieldSprite.setDepth(5).setScale(1);
+  this.#shieldSprite.setAlpha(0.8);
+  if (!useBlueShield) this.#shieldSprite.play('invincible_shield');
 
   this.scene.time.delayedCall(4000, () => {
     this.#invulneravel = false;
-    this.setAlpha(1);
     if (this.#shieldSprite) {
       this.#shieldSprite.destroy();
       this.#shieldSprite = null;
     }
   });
 }
+
+
 
 }

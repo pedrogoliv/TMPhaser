@@ -23,15 +23,16 @@ export class GameScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.sprite(0, 0, 'bg1', 0).setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg1');
-    this.add.sprite(0, 0, 'bg2', 0).setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg2');
-    this.add.sprite(0, 0, 'bg3', 0).setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg3');
+    this.add.sprite(0, 0, 'bg1').setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg1');
+    this.add.sprite(0, 0, 'bg2').setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg2');
+    this.add.sprite(0, 0, 'bg3').setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg3');
 
     const eventBusComponent = new EventBusComponent();
     const audioManager = new AudioManager(this, eventBusComponent);
     this.music = this.sound.get('music');
-
     this.player = new Player(this, eventBusComponent);
+
+    
 
     const scoutSpawner = new EnemySpawnerComponent(this, ScoutEnemy, {
       interval: CONFIG.ENEMY_SCOUT_GROUP_SPAWN_INTERVAL,
@@ -82,12 +83,13 @@ export class GameScene extends Phaser.Scene {
     new Score(this, eventBusComponent);
     new Lives(this, eventBusComponent);
 
+    // Timer
     this.timer = 0;
-    this.timerText = this.add.text(this.scale.width - 20, this.scale.height - 20, 'Tempo: 0s', {
-      fontFamily: '"Press Start 2P", monospace',
+    this.timerText = this.add.text(this.scale.width - 10, this.scale.height - 10, '0s', {
       fontSize: '10px',
-      color: '#ffffff',
-    }).setOrigin(1);
+      fontStyle: 'bold',
+      color: '#ffffff'
+    }).setOrigin(1, 1);
 
     this.time.addEvent({
       delay: 1000,
@@ -98,23 +100,27 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
-
-    // Shield power-up spawn
-    this.time.addEvent({
+    this.shieldDropEvent = this.time.addEvent({
       delay: 30000,
       loop: true,
       callback: () => {
-       if (Math.random() < 0.5) return;
-
+        if (Math.random() < 0.5) return;
         const x = Phaser.Math.Between(50, this.scale.width - 50);
-        const shield = new ShieldPowerUp(this, x, -20);
-
+        const shield = new ShieldPowerUp(this, x, -20).setScale(1);
         this.physics.add.overlap(shield, this.player, () => {
           shield.destroy();
-          this.player.activateShield();
+          this.player.activateShield(true);
         });
       }
     });
+
+    eventBusComponent.on(CUSTOM_EVENTS.PLAYER_DESTROYED, () => {
+      if (this.shieldDropEvent) {
+        this.shieldDropEvent.remove(false);
+        this.shieldDropEvent = null;
+      }
+    });
+
 
     this.currentDifficulty = 0;
     this.scoreValue = 0;
@@ -135,19 +141,16 @@ export class GameScene extends Phaser.Scene {
         this.currentDifficulty++;
       }
 
-      // Random drop of shield power-up
-      const dropChance = 0.05; 
+      const dropChance = 0.05;
       if (Math.random() < dropChance) {
-        const shield = new ShieldPowerUp(this, enemy.x, enemy.y);
-
+        const shield = new ShieldPowerUp(this, enemy.x, enemy.y).setScale(1);
         this.physics.add.overlap(this.player, shield, () => {
           shield.destroy();
-          this.player.activateShield();
+          this.player.activateShield(true);
         });
       }
     });
 
-    // Pause controls
     this.isPaused = false;
     this.input.keyboard.on('keydown-ESC', () => this.togglePauseMenu());
     this.input.keyboard.on('keydown-P', () => this.togglePauseMenu());
