@@ -12,6 +12,8 @@ import { Score } from '../objects/ui/score.js';
 import { Lives } from '../objects/ui/lives.js';
 import { AudioManager } from '../objects/audio-manager.js';
 import { ShieldPowerUp } from '../objects/powerups/shield-powerup.js';
+import { ZapperPowerUp } from '../objects/powerups/zapper-powerup.js';
+
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -32,7 +34,7 @@ export class GameScene extends Phaser.Scene {
     this.music = this.sound.get('music');
     this.player = new Player(this, eventBusComponent);
 
-    
+
 
     const scoutSpawner = new EnemySpawnerComponent(this, ScoutEnemy, {
       interval: CONFIG.ENEMY_SCOUT_GROUP_SPAWN_INTERVAL,
@@ -141,7 +143,7 @@ export class GameScene extends Phaser.Scene {
         this.currentDifficulty++;
       }
 
-      const dropChance = 0.05;
+      const dropChance = 0.1;
       if (Math.random() < dropChance) {
         const shield = new ShieldPowerUp(this, enemy.x, enemy.y).setScale(1);
         this.physics.add.overlap(this.player, shield, () => {
@@ -151,9 +153,36 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
+    this.time.addEvent({
+      delay: 20000, // mudar aqui pra testar (20000 = 20 segundos)
+      loop: true,
+      callback: () => {
+        if (Math.random() < 0.7) return;
+
+        const x = Phaser.Math.Between(50, this.scale.width - 50);
+        const zapper = new ZapperPowerUp(this, x, -20);
+
+        this.physics.add.overlap(zapper, this.player, () => {
+          zapper.destroy();
+          this.player.weaponComponent.activateZapperMode({
+            speed: 500,
+            interval: 100,
+            lifespan: 2,
+            maxCount: 20,
+            yOffset: -20,
+            flipY: false
+          }, 5000);
+        });
+      }
+    });
+
+
+
+
     this.isPaused = false;
     this.input.keyboard.on('keydown-ESC', () => this.togglePauseMenu());
     this.input.keyboard.on('keydown-P', () => this.togglePauseMenu());
+
   }
 
   togglePauseMenu() {
@@ -169,4 +198,6 @@ export class GameScene extends Phaser.Scene {
     this.scene.pause();
     this.music?.pause();
   }
+
+  
 }

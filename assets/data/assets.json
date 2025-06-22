@@ -88,7 +88,23 @@
       "key": "shield",
       "url": "Shield.png",
       "frameConfig": { "frameWidth": 64, "frameHeight": 64 }
+      },
+      {
+        "type": "spritesheet",
+        "key": "zapper",
+        "url": "Zapper.png",
+        "frameConfig": {
+          "frameWidth": 32,
+          "frameHeight": 32
+        }
+      },
+      {
+      "type": "image",
+      "key": "upgrade",
+      "url": "upgrade.png"
       }
+
+
 
     ]
   },

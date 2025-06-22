@@ -71,6 +71,12 @@
     "frameRate": 12,
     "repeat": -1,
     "assetKey": "shield"
+  },
+  {
+    "key": "zapper_powerup",
+    "frameRate": 12,
+    "repeat": -1,
+    "assetKey": "zapper"
   }
 
 

@@ -13,6 +13,8 @@ export class PreloadScene extends Phaser.Scene {
     this.load.audio('shot', 'assets/audio/ansimuz/shot_1.wav');
     this.load.audio('shot2', 'assets/audio/ansimuz/shot_2.wav');
     this.load.audio('music', 'assets/audio/ansimuz/space_asteroids.wav');
+    this.load.audio('zapper', 'assets/audio/ansimuz/zapper.wav');
+
   }
 
   create() {
