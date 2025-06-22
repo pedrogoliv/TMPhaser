@@ -45,6 +45,8 @@ game.scene.add('Level1Scene', Level1Scene);
 game.scene.add('Level2Scene', Level2Scene);
 game.scene.add('Level3Scene', Level3Scene);
 game.scene.add('Level4Scene', Level4Scene);
+game.scene.add('Level5Scene', Level5Scene);
+game.scene.add('Level6Scene', Level6Scene);
 game.scene.add('VictoryScene', VictoryScene);
 game.scene.add('MapScene', MapScene);
 game.scene.start('BootScene');

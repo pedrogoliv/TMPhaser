@@ -86,7 +86,11 @@ export class FighterEnemy extends Phaser.GameObjects.Container {
       },
       this.#eventBusComponent
     );
-    this.#healthComponent = new HealthComponent(CONFIG.ENEMY_FIGHTER_HEALTH);
+
+    const isSniper = this.scene.registry.get('levelMode') === 'sniper';
+    const vida = isSniper ? 1 : CONFIG.ENEMY_FIGHTER_HEALTH;
+    this.#healthComponent = new HealthComponent(vida);
+
     this.#colliderComponent = new ColliderComponent(this.#healthComponent, this.#eventBusComponent);
     this.#eventBusComponent.emit(CUSTOM_EVENTS.ENEMY_INIT, this);
     this.#isInitialized = true;

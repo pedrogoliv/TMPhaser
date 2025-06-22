@@ -16,11 +16,15 @@ export class HorizontalMovementComponent {
   }
 
   reset() {
+    if (!this.#gameObject.body) return;
+
     this.#gameObject.body.velocity.x = 0;
     this.#gameObject.body.setAngularAcceleration(0);
   }
 
   update() {
+    if (!this.#gameObject.active || !this.#gameObject.body) return;
+
     if (this.#inputComponent.leftIsDown) {
       this.#gameObject.body.velocity.x -= this.#velocity;
     } else if (this.#inputComponent.rightIsDown) {

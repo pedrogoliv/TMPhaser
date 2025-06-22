@@ -8,13 +8,15 @@ export class WeaponComponent {
   #bulletConfig;
   #eventBusComponent;
   #disabled = false;
+  #isPlayerWeapon;
 
-  constructor(gameObject, inputComponent, bulletConfig, eventBusComponent) {
+  constructor(gameObject, inputComponent, bulletConfig, eventBusComponent, options = {}) {
     this.#gameObject = gameObject;
     this.#inputComponent = inputComponent;
     this.#bulletConfig = bulletConfig;
     this.#eventBusComponent = eventBusComponent;
     this.#fireBulletInterval = 0;
+    this.#isPlayerWeapon = options.isPlayerWeapon ?? false;
 
     this.#bulletGroup = this.#gameObject.scene.physics.add.group({
       name: `bullets-${Phaser.Math.RND.uuid()}`,
@@ -71,6 +73,10 @@ export class WeaponComponent {
 
       this.#fireBulletInterval = this.#bulletConfig.interval;
       this.#eventBusComponent.emit(CUSTOM_EVENTS.SHIP_SHOOT);
+
+      if (this.#isPlayerWeapon) {
+        this.#eventBusComponent.emit('BULLET_FIRED');
+      }
     }
   }
 

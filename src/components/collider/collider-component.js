@@ -4,26 +4,25 @@ export class ColliderComponent {
   #healthComponent;
   #eventBusComponent;
 
-constructor(healthComponent, eventBusComponent, owner = null) {
-  this.#healthComponent = healthComponent;
-  this.#eventBusComponent = eventBusComponent;
-  this.owner = owner;
-}
-
-
-collideWithEnemyShip() {
-  if (this.#healthComponent.isDead || (this.owner?.invulneravel)) {
-    return;
+  constructor(healthComponent, eventBusComponent, owner = null) {
+    this.#healthComponent = healthComponent;
+    this.#eventBusComponent = eventBusComponent;
+    this.owner = owner;
   }
-  this.#healthComponent.die();
-}
 
-collideWithEnemyProjectile() {
-  if (this.#healthComponent.isDead || (this.owner?.invulneravel)) {
-    return;
+
+  collideWithEnemyShip() {
+    if (this.#healthComponent.isDead || (this.owner?.invulneravel)) {
+      return;
+    }
+    this.#healthComponent.die();
   }
-  this.#healthComponent.hit();
-  this.#eventBusComponent.emit(CUSTOM_EVENTS.SHIP_HIT);
-}
 
+  collideWithEnemyProjectile() {
+    if (this.#healthComponent.isDead || (this.owner?.invulneravel)) {
+      return;
+    }
+    this.#healthComponent.hit();
+    this.#eventBusComponent.emit(CUSTOM_EVENTS.SHIP_HIT);
+  }
 }

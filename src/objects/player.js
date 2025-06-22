@@ -55,11 +55,11 @@ export class Player extends Phaser.GameObjects.Container {
         yOffset: -20,
         flipY: false,
       },
-      this.#eventBusComponent
+      this.#eventBusComponent,
+      { isPlayerWeapon: true } // 👈 Esta linha garante que só o jogador conta balas
     );
     this.#healthComponent = new HealthComponent(CONFIG.PLAYER_HEALTH);
     this.#colliderComponent = new ColliderComponent(this.#healthComponent, this.#eventBusComponent, this);
-
 
     this.#hide();
     this.#eventBusComponent.on(CUSTOM_EVENTS.PLAYER_SPAWN, this.#spawn, this);

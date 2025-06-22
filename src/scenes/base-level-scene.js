@@ -19,14 +19,15 @@ export class BaseLevelScene extends Phaser.Scene {
 
   init(data) {
     this.levelConfig = data;
-    this.modo = data.modo ?? 'inimigos'; // <--- ADICIONAR ISTO!
+    this.registry.set('levelMode', this.levelConfig.modo);
+    this.modo = data.modo ?? 'inimigos';
     this.scoreValue = 0;
     this.totalEnemiesToSpawn = data.enemyLimit ?? 20;
     this.spawnedEnemies = 0;
     this.destroyedEnemies = 0;
     this.finalCheckTimer = null;
+    this.balasDisparadas = 0;
   }
-
 
   create() {
     this.add.sprite(0, 0, 'bg1').setOrigin(0, 1).setAlpha(0.7).setAngle(90).setScale(1, 1.25).play('bg1');
@@ -47,7 +48,7 @@ export class BaseLevelScene extends Phaser.Scene {
       spawnAt: 5000,
     }, this.eventBus);
 
-        this.eventBus.on(CUSTOM_EVENTS.GAME_OVER, () => {
+    this.eventBus.on(CUSTOM_EVENTS.GAME_OVER, () => {
       this.scoutSpawner?.destroy?.();
       this.fighterSpawner?.destroy?.();
 
@@ -56,7 +57,7 @@ export class BaseLevelScene extends Phaser.Scene {
         nextLevel: this.levelConfig.nextLevel,
         previousScene: this.scene.key,
         baseScene: this.scene.key,
-        stars: ['Star_01', 'Star_01', 'Star_01'], 
+        stars: ['Star_01', 'Star_01', 'Star_01'],
       });
 
       this.scene.pause();
@@ -79,8 +80,8 @@ export class BaseLevelScene extends Phaser.Scene {
 
     this.eventBus.on(CUSTOM_EVENTS.ENEMY_INIT, (enemyObj) => {
       if (this.spawnedEnemies >= this.totalEnemiesToSpawn) return;
-
       this.spawnedEnemies++;
+
       if (this.spawnedEnemies >= this.totalEnemiesToSpawn) {
         this.scoutSpawner.stop();
         this.fighterSpawner.stop();
@@ -129,10 +130,29 @@ export class BaseLevelScene extends Phaser.Scene {
       };
       this.scoreValue += scoreMap[key] ?? 0;
       this.destroyedEnemies++;
+
+      console.log(`[DEBUG] Inimigos destruídos: ${this.destroyedEnemies}/${this.levelConfig.killObjective}`);
+
+      if (
+        this.levelConfig?.modo === 'sniper' &&
+        this.destroyedEnemies >= this.levelConfig.killObjective
+      ) {
+        console.log('[DEBUG] Objetivo de kills atingido → nível completo!');
+        console.log(`[DEBUG] Finalização do nível: ${this.destroyedEnemies} kills / ${this.balasDisparadas} balas`);
+
+        this.scoutSpawner.phaserGroup?.getChildren().forEach(child => child.setActive(false));
+        this.fighterSpawner.phaserGroup?.getChildren().forEach(child => child.setActive(false));
+
+        this.onLevelComplete();
+      }
     });
 
     this.input.keyboard.on('keydown-ESC', () => this.togglePause());
     this.input.keyboard.on('keydown-P', () => this.togglePause());
+
+    this.eventBus.on('BULLET_FIRED', () => {
+      this.balasDisparadas++;
+    });
   }
 
   noEnemiesRemaining() {
@@ -149,6 +169,22 @@ export class BaseLevelScene extends Phaser.Scene {
   }
 
   getStarRating(score) {
+    if (this.levelConfig.modo === 'sniper') {
+      const kills = this.destroyedEnemies;
+      const balas = this.balasDisparadas;
+      const objetivo = this.levelConfig.killObjective ?? 10;
+      const [three, two, one] = this.levelConfig.bulletThresholds ?? [15, 25, 40];
+
+      if (kills < objetivo || balas > one) {
+        return ['Star_01', 'Star_01', 'Star_01'];
+      }
+
+      if (balas <= three) return ['Star_03', 'Star_03', 'Star_03'];
+      if (balas <= two) return ['Star_03', 'Star_03', 'Star_02'];
+      if (balas <= one) return ['Star_03', 'Star_02', 'Star_01'];
+      return ['Star_01', 'Star_01', 'Star_01'];
+    }
+
     if (this.modo === 'tempo' && this.levelConfig.starKillThresholds) {
       const kills = this.destroyedEnemies;
       const [three, two, one] = this.levelConfig.starKillThresholds;
@@ -172,8 +208,6 @@ export class BaseLevelScene extends Phaser.Scene {
     if (score >= thresholds[2]) return ['Star_03', 'Star_02', 'Star_01'];
     return ['Star_01', 'Star_01', 'Star_01'];
   }
-
-
 
   onLevelComplete() {
     this.scoutSpawner?.destroy();

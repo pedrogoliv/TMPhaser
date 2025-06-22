@@ -16,11 +16,16 @@ export class VerticalMovementComponent {
   }
 
   reset() {
+    if (!this.#gameObject.body) return;
+
     this.#gameObject.body.velocity.y = 0;
     this.#gameObject.body.setAngularAcceleration(0);
   }
 
+
   update() {
+    if (!this.#gameObject.active || !this.#gameObject.body) return;
+
     if (this.#inputComponent.downIsDown) {
       this.#gameObject.body.velocity.y += this.#velocity;
     } else if (this.#inputComponent.upIsDown) {
